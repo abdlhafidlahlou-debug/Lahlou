@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lahlou | لوحة التحكم</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; direction: rtl; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>لوحة تحكم متجر Lahlou</h2>
+
+    <!-- قسم تسجيل الدخول -->
+    <div id="login-section">
+        <h3>تسجيل دخول المسؤول</h3>
+        <input type="email" id="email" placeholder="البريد الإلكتروني">
+        <input type="password" id="password" placeholder="كلمة المرور">
+        <button onclick="loginAdmin()">دخول</button>
+        <p id="login-error" style="color: red;"></p>
+    </div>
+
+    <!-- قسم إدارة المنتجات -->
+    <div id="admin-section" class="hidden">
+        <h3>إضافة منتج جديد لمتجر Lahlou</h3>
+        <input type="text" id="prod-name" placeholder="اسم المنتج">
+        <input type="number" id="prod-price" placeholder="السعر">
+        <input type="text" id="prod-image" placeholder="رابط صورة المنتج">
+        <button onclick="addProduct()">حفظ ونشر المنتج</button>
+        <button onclick="logoutAdmin()" style="background: #dc3545; margin-top: 20px;">تسجيل الخروج</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
+      authDomain: "lahlou-70ac2.firebaseapp.com",
+      projectId: "lahlou-70ac2",
+      storageBucket: "lahlou-70ac2.firebasestorage.app",
+      messagingSenderId: "1014570891670",
+      appId: "1:1014570891670:web:954e2da1b7881bd7d345b7",
+      measurementId: "G-PGW6J8WXWT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.loginAdmin = function() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                alert("تم تسجيل الدخول بنجاح!");
+            })
+            .catch((error) => {
+                document.getElementById('login-error').innerText = "خطأ في البيانات: " + error.message;
+            });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('admin-section').classList.remove('hidden');
+        } else {
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('admin-section').classList.add('hidden');
+        }
+    });
+
+    window.logoutAdmin = function() {
+        signOut(auth);
+    }
+
+    window.addProduct = async function() {
+        const name = document.getElementById('prod-name').value;
+        const price = document.getElementById('prod-price').value;
+        const image = document.getElementById('prod-image').value;
+
+        if(!name || !price) {
+            alert("الرجاء ملء الحقول الأساسية!");
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, "products"), {
+                name: name,
+                price: Number(price),
+                image: image,
+                createdAt: new Date()
+            });
+            alert("تم إضافة المنتج بنجاح!");
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-price').value = '';
+            document.getElementById('prod-image').value = '';
+        } catch (e) {
+            alert("حدث خطأ أثناء الإضافة: " + e.message);
+        }
+    }
+</script>
+
+</body>
+</html>
