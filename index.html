@@ -5,35 +5,100 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>متجر الساعات</title>
   <style>
+    :root {
+      --primary-color: #581827; /* لون دلال ستايل العنابي */
+      --accent-color: #d4af37;
+      --bg-color: #f9f9f9;
+    }
     body {
       font-family: Tahoma, sans-serif;
       margin: 0;
-      background-color: #f9f9f9;
+      background-color: var(--bg-color);
       color: #333;
     }
-    header {
-      background-color: #111;
+    /* شريط الإعلانات العلوي */
+    .top-bar {
+      background-color: var(--primary-color);
       color: #fff;
-      padding: 15px;
+      text-align: center;
+      font-size: 11px;
+      padding: 6px;
+    }
+    /* الهيدر الرئيسي */
+    header {
+      background-color: #fff;
+      padding: 10px 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid #eee;
     }
-    header h1 {
-      margin: 0;
-      font-size: 20px;
+    .logo {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-color);
     }
     .admin-btn {
-      background-color: #d4af37;
+      background-color: var(--primary-color);
       border: none;
       color: #fff;
-      padding: 8px 12px;
+      padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 12px;
     }
+    /* بنر الواجهة */
+    .hero-banner {
+      background-color: var(--primary-color);
+      color: #fff;
+      margin: 10px;
+      padding: 20px 15px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .hero-banner h2 {
+      font-size: 18px;
+      margin: 0 0 10px;
+    }
+    .hero-banner p {
+      font-size: 12px;
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+    /* الأقسام الأربعة السريعة */
+    .categories-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px;
+      background: #fff;
+      margin-bottom: 15px;
+    }
+    .cat-item {
+      background: #fff;
+      border: 1px solid #eee;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+      color: var(--primary-color);
+    }
+    .cat-item.active {
+      background: var(--primary-color);
+      color: #fff;
+    }
+    /* شبكة المنتجات */
     .container {
-      padding: 15px;
+      padding: 0 10px 20px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 15px 5px 10px;
+      color: #222;
+      border-right: 3px solid var(--primary-color);
+      padding-right: 8px;
     }
     .products-grid {
       display: grid;
@@ -44,64 +109,88 @@
       background: #fff;
       padding: 10px;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       text-align: center;
     }
     .product-card img {
       width: 100%;
-      height: 140px;
+      height: 130px;
       object-fit: cover;
       border-radius: 6px;
     }
     .product-card h3 {
-      font-size: 15px;
-      margin: 10px 0 5px;
+      font-size: 14px;
+      margin: 8px 0 4px;
     }
     .product-card p {
-      color: #d4af37;
+      color: var(--primary-color);
       font-weight: bold;
+      font-size: 13px;
       margin: 0 0 10px;
     }
     .buy-btn {
-      background-color: #111;
+      background-color: var(--primary-color);
       color: #fff;
       border: none;
       width: 100%;
-      padding: 8px;
+      padding: 7px;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
 
+  <!-- شريط الإعلانات -->
+  <div class="top-bar">
+    توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر داخل المغرب 🌸
+  </div>
+
+  <!-- الهيدر -->
   <header>
-    <h1>متجر الساعات</h1>
+    <div class="logo">متجر الساعات</div>
     <button class="admin-btn" onclick="goToLogin()">تسجيل الدخول</button>
   </header>
 
+  <!-- بنر ترحيبي -->
+  <div class="hero-banner">
+    <h2>تألقي بأناقة لا تُنسى في كل مناسبة</h2>
+    <p>تشكيلة راقية ومختارة بعناية لتناسب أصحاب الذوق الرفيع.</p>
+  </div>
+
+  <!-- الأقسام الأربعة -->
+  <div class="categories-bar">
+    <div class="cat-item active">الكل</div>
+    <div class="cat-item">ساعات كلاسيكية</div>
+    <div class="cat-item">ساعات رياضية</div>
+    <div class="cat-item">إكسسوارات رجالية</div>
+  </div>
+
+  <!-- المنتجات -->
   <div class="container">
-    <h2>أحدث الساعات</h2>
+    <div class="section-title">أحدث التشكيلات</div>
     <div class="products-grid" id="productsGrid">
-      <!-- المنتجات ستعرض هنا ديناميكياً -->
+      
       <div class="product-card">
         <img src="https://via.placeholder.com/150" alt="ساعة">
         <h3>ساعة كلاسيكية</h3>
         <p>500 درهم</p>
         <button class="buy-btn">اطلب الان</button>
       </div>
+
       <div class="product-card">
         <img src="https://via.placeholder.com/150" alt="ساعة">
         <h3>ساعة رياضية</h3>
         <p>750 درهم</p>
         <button class="buy-btn">اطلب الان</button>
       </div>
+
     </div>
   </div>
 
   <script>
     function goToLogin() {
-      // هنا سنقوم لاحقاً بربط نافذة تسجيل الدخول
       alert("الانتقال إلى صفحة تسجيل الدخول");
     }
   </script>
