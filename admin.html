@@ -6,7 +6,7 @@
     <title>Lahlou | لوحة التحكم</title>
     <style>
         :root {
-            --primary-color: #581827;
+            --primary-color: #1a1a1a;
             --accent-color: #d4af37;
             --bg-color: #f4f4f4;
         }
@@ -27,15 +27,17 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
         }
         h2, h3 { color: var(--primary-color); text-align: center; }
-        input, button { 
+        input, textarea, button { 
             width: 100%; 
             padding: 12px; 
             margin: 8px 0; 
             box-sizing: border-box; 
             border-radius: 6px;
             font-size: 14px;
+            font-family: Tahoma, sans-serif;
         }
-        input { border: 1px solid #ddd; background: #fff; }
+        input, textarea { border: 1px solid #ddd; background: #fff; }
+        textarea { resize: vertical; height: 80px; }
         button { background: var(--primary-color); color: white; border: none; cursor: pointer; font-weight: bold; }
         button:hover { opacity: 0.9; }
         .danger-btn { background: #dc3545; }
@@ -52,20 +54,21 @@
         .order-card {
             background: #fff8f8;
             border: 1px solid #f5c6cb;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 10px;
             border-radius: 6px;
             font-size: 13px;
         }
+        .order-card strong { color: var(--primary-color); }
         .delete-btn {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 11px;
-            margin-top: 5px;
+            margin-top: 8px;
             width: auto;
         }
     </style>
@@ -89,7 +92,8 @@
         <h3>إضافة منتج جديد</h3>
         <input type="text" id="prod-name" placeholder="اسم المنتج">
         <input type="number" id="prod-price" placeholder="السعر (درهم)">
-        <input type="text" id="prod-image" placeholder="رابط صورة المنتج">
+        <input type="text" id="prod-image" placeholder="رابط صورة المنتج (مقاس 9:16)">
+        <textarea id="prod-desc" placeholder="وصف المنتج (مميزات المنتج، الخامات، تفاصيل الإكسسوار...)"></textarea>
         <button onclick="addProduct()">حفظ ونشر المنتج</button>
 
         <h3 style="margin-top: 25px;">📦 طلبات الزبناء الواردة</h3>
@@ -149,46 +153,56 @@
         const name = document.getElementById('prod-name').value;
         const price = document.getElementById('prod-price').value;
         const image = document.getElementById('prod-image').value;
+        const description = document.getElementById('prod-desc').value;
 
-        if(!name || !price) { alert("املأ الاسم والسعر!"); return; }
+        if(!name || !price) { alert("املأ الاسم والسعر على الأقل!"); return; }
 
         await addDoc(collection(db, "products"), {
-            name, price: Number(price), image: image || 'https://via.placeholder.com/150', createdAt: new Date()
+            name, 
+            price: Number(price), 
+            image: image || 'https://via.placeholder.com/150', 
+            description: description || '',
+            createdAt: new Date()
         });
         alert("تم نشر المنتج بنجاح!");
         document.getElementById('prod-name').value = '';
         document.getElementById('prod-price').value = '';
         document.getElementById('prod-image').value = '';
+        document.getElementById('prod-desc').value = '';
         loadAdminData();
     }
 
     async function loadAdminData() {
-        // تحميل الطلبات
         const ordersDiv = document.getElementById('admin-orders-list');
         const ordersSnap = await getDocs(collection(db, "orders"));
         ordersDiv.innerHTML = ordersSnap.empty ? '<p style="text-align: center; color: #777;">لا توجد طلبات جديدة</p>' : '';
+        
         ordersSnap.forEach((d) => {
             const o = d.data();
             ordersDiv.innerHTML += `
                 <div class="order-card">
-                    <strong>المنتج:</strong> ${o.productName} (${o.productPrice} د.م)<br>
-                    <strong>الاسم:</strong> ${o.customerName}<br>
-                    <strong>الهاتف:</strong> <a href="tel:${o.customerPhone}">${o.customerPhone}</a><br>
-                    <strong>العنوان:</strong> ${o.customerAddress}, ${o.customerCity}<br>
+                    <strong>🛒 المنتج المطلوب:</strong> <span style="color:#d4af37; font-weight:bold;">${o.productName}</span><br>
+                    <strong>💰 الثمن:</strong> ${o.productPrice} درهم<br>
+                    <strong>👤 اسم الزبون:</strong> ${o.customerName}<br>
+                    <strong>📞 الهاتف:</strong> <a href="tel:${o.customerPhone}">${o.customerPhone}</a><br>
+                    <strong>📍 العنوان والمدينة:</strong> ${o.customerAddress}, ${o.customerCity}<br>
                     <button class="delete-btn" onclick="deleteItem('orders', '${d.id}')">حذف الطلب</button>
                 </div>
             `;
         });
 
-        // تحميل المنتجات
         const prodsDiv = document.getElementById('admin-products-list');
         const prodsSnap = await getDocs(collection(db, "products"));
         prodsDiv.innerHTML = prodsSnap.empty ? '<p style="text-align: center; color: #777;">لا توجد منتجات</p>' : '';
+        
         prodsSnap.forEach((d) => {
             const p = d.data();
             prodsDiv.innerHTML += `
                 <div class="admin-item" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>${p.name} - ${p.price} درهم</span>
+                    <div>
+                        <strong>${p.name}</strong> - ${p.price} درهم<br>
+                        <small style="color:#666;">${p.description ? p.description.substring(0, 40) + '...' : 'بدون وصف'}</small>
+                    </div>
                     <button class="delete-btn" onclick="deleteItem('products', '${d.id}')">حذف</button>
                 </div>
             `;
@@ -196,7 +210,7 @@
     }
 
     window.deleteItem = async function(col, id) {
-        if(confirm("هل أنت متأكد؟")) {
+        if(confirm("هل أنت متأكد من الحذف؟")) {
             await deleteDoc(doc(db, col, id));
             loadAdminData();
         }
