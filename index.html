@@ -3,115 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>متجر Lahlou</title>
+  <title>Lahlou Accessories | إكسسوارات راقية</title>
   <style>
     :root {
-      --primary-color: #581827;
+      --primary-color: #1a1a1a;
       --accent-color: #d4af37;
-      --bg-color: #f9f9f9;
+      --bg-color: #fbfbfb;
+      --text-color: #333;
     }
     body {
       font-family: Tahoma, sans-serif;
       margin: 0;
       background-color: var(--bg-color);
-      color: #333;
+      color: var(--text-color);
     }
     .top-bar {
       background-color: var(--primary-color);
-      color: #fff;
+      color: var(--accent-color);
       text-align: center;
       font-size: 11px;
       padding: 6px;
+      border-bottom: 1px solid #333;
     }
     header {
       background-color: #fff;
-      padding: 12px 15px;
+      padding: 15px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #eee;
     }
     .logo {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
       color: var(--primary-color);
+      letter-spacing: 1px;
+    }
+    .logo span {
+      color: var(--accent-color);
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      font-size: 13px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #555;
+    }
+    .nav-links a.active {
+      color: var(--primary-color);
+      font-weight: bold;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 2px;
     }
     .hero-banner {
-      background-color: var(--primary-color);
+      background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
       color: #fff;
-      margin: 10px;
-      padding: 20px 15px;
+      margin: 15px;
+      padding: 30px 20px;
       border-radius: 12px;
       text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     .hero-banner h2 {
-      font-size: 18px;
+      font-size: 20px;
       margin: 0 0 10px;
+      color: var(--accent-color);
     }
     .hero-banner p {
-      font-size: 12px;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.6;
       opacity: 0.9;
+      max-width: 400px;
+      margin: 0 auto 15px;
     }
-    .categories-bar {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 10px;
-      background: #fff;
-      margin-bottom: 15px;
+    .hero-btn {
+      background-color: var(--accent-color);
+      color: #1a1a1a;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
     }
-    .cat-item {
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 0 15px;
+      margin-bottom: 20px;
+    }
+    .cat-box {
       background: #fff;
       border: 1px solid #eee;
-      padding: 8px 15px;
-      border-radius: 20px;
+      padding: 15px 5px;
+      border-radius: 10px;
+      text-align: center;
       font-size: 12px;
-      white-space: nowrap;
       cursor: pointer;
-      color: var(--primary-color);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
     }
-    .cat-item.active {
-      background: var(--primary-color);
-      color: #fff;
+    .cat-box span {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 5px;
     }
     .container {
-      padding: 0 10px 20px;
+      padding: 0 15px 30px;
     }
     .section-title {
       font-size: 16px;
       font-weight: bold;
-      margin: 15px 5px 10px;
-      color: #222;
-      border-right: 3px solid var(--primary-color);
+      margin: 20px 0 15px;
+      color: var(--primary-color);
+      border-right: 3px solid var(--accent-color);
       padding-right: 8px;
     }
     .products-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
     .product-card {
       background: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       text-align: center;
+      border: 1px solid #eee;
     }
     .product-card img {
       width: 100%;
-      height: 130px;
+      height: 140px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 8px;
     }
     .product-card h3 {
       font-size: 14px;
-      margin: 8px 0 4px;
+      margin: 10px 0 5px;
+      color: #222;
     }
     .product-card p {
-      color: var(--primary-color);
+      color: var(--accent-color);
       font-weight: bold;
-      font-size: 13px;
+      font-size: 14px;
       margin: 0 0 10px;
     }
     .buy-btn {
@@ -119,25 +156,28 @@
       color: #fff;
       border: none;
       width: 100%;
-      padding: 7px;
-      border-radius: 4px;
+      padding: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: bold;
     }
     .no-products {
       grid-column: span 2;
       text-align: center;
       color: #777;
-      padding: 20px;
+      padding: 30px;
       font-size: 14px;
+      background: #fff;
+      border-radius: 10px;
     }
 
-    /* تصميم النافذة المنبثقة (Modal) لإدخال معلومات الزبون */
+    /* نافذة تأكيد الطلب */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -145,10 +185,10 @@
     .modal-content {
       background: #fff;
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 12px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
     .modal-content h3 {
       color: var(--primary-color);
@@ -168,7 +208,7 @@
     .modal-buttons {
       display: flex;
       gap: 10px;
-      margin-top: 10px;
+      margin-top: 15px;
     }
     .modal-buttons button {
       flex: 1;
@@ -179,55 +219,75 @@
       font-weight: bold;
       font-size: 13px;
     }
-    .confirm-order-btn { background: var(--primary-color); color: #fff; }
-    .cancel-order-btn { background: #ccc; color: #333; }
+    .confirm-order-btn { background: var(--accent-color); color: var(--primary-color); }
+    .cancel-order-btn { background: #eee; color: #333; }
+
+    footer {
+      background-color: var(--primary-color);
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر داخل المغرب 🌸
+    توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر داخل المغرب ✨
   </div>
 
   <header>
-    <div class="logo">متجر Lahlou</div>
+    <div class="logo">LAHLOU <span>ACCESSORIES</span></div>
+    <div class="nav-links">
+      <a href="#" class="active">الرئيسية</a>
+      <a href="#">ساعات</a>
+      <a href="#">أساور</a>
+      <a href="#">خواتم</a>
+    </div>
   </header>
 
   <div class="hero-banner">
-    <h2>تألقي بأناقة لا تُنسى في كل مناسبة</h2>
-    <p>تشكيلة راقية ومختارة بعناية لتناسب أصحاب الذوق الرفيع.</p>
+    <h2>تألقي بأرقى الإكسسوارات الفاخرة</h2>
+    <p>تشكيلة حصرية ومختارة بعناية لتضفي لمسة من الأناقة والتميز على إطلالتك اليومية.</p>
+    <button class="hero-banner-btn hero-btn" onclick="window.scrollTo({top: 400, behavior: 'smooth'});">تسوقي التشكيلة</button>
   </div>
 
-  <div class="categories-bar">
-    <div class="cat-item active">الكل</div>
-    <div class="cat-item">ساعات كلاسيكية</div>
-    <div class="cat-item">ساعات رياضية</div>
-    <div class="cat-item">إكسسوارات رجالية</div>
+  <div class="categories-grid">
+    <div class="cat-box"><span>💍</span>خواتم</div>
+    <div class="cat-box"><span>⌚</span>ساعات</div>
+    <div class="cat-box"><span>📿</span>قلائد</div>
+    <div class="cat-box"><span>💎</span>أساور</div>
   </div>
 
   <div class="container">
-    <div class="section-title">أحدث التشكيلات</div>
+    <div class="section-title">أحدث التشكيلات العصرية</div>
     <div class="products-grid" id="productsGrid">
       <div class="no-products">جاري تحميل المنتجات...</div>
     </div>
   </div>
 
-  <!-- نافذة إدخال بيانات الزبون عند الطلب -->
+  <!-- نافذة إدخال بيانات الزبون -->
   <div class="modal" id="orderModal">
     <div class="modal-content">
       <h3>تأكيد الطلب</h3>
-      <p id="ordered-product-name" style="text-align: center; font-weight: bold; font-size: 14px; color: #581827;"></p>
+      <p id="ordered-product-name" style="text-align: center; font-weight: bold; font-size: 13px; color: #1a1a1a;"></p>
       <input type="text" id="cust-name" placeholder="الاسم الكامل">
       <input type="tel" id="cust-phone" placeholder="رقم الهاتف">
       <input type="text" id="cust-address" placeholder="العنوان (الشارع / الحي)">
       <input type="text" id="cust-city" placeholder="المدينة">
       
       <div class="modal-buttons">
-        <button class="confirm-order-btn" onclick="submitOrder()">تأكيد الطلب الآن</button>
+        <button class="confirm-order-btn" onclick="submitOrder()">تأكيد الطلب</button>
         <button class="cancel-order-btn" onclick="closeModal()">إلغاء</button>
       </div>
     </div>
   </div>
+
+  <footer>
+    <p>© 2026 Lahlou Accessories — جميع الحقوق محفوظة</p>
+  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -255,7 +315,7 @@
         grid.innerHTML = '';
         
         if (querySnapshot.empty) {
-          grid.innerHTML = '<div class="no-products">لا توجد منتجات مضافة حالياً</div>';
+          grid.innerHTML = '<div class="no-products">لا توجد إكسسوارات مضافة حالياً في المتجر</div>';
           return;
         }
 
@@ -299,7 +359,6 @@
       }
 
       try {
-        // حفظ الطلب في مجموعة "orders" بقاعدة البيانات لتراه في لوحة التحكم
         await addDoc(collection(db, "orders"), {
           productName: selectedProduct.name,
           productPrice: selectedProduct.price,
@@ -313,7 +372,6 @@
         alert("تم تسجيل طلبك بنجاح! سنتصل بك قريباً للتأكيد.");
         closeModal();
         
-        // تفريغ الحقول
         document.getElementById('cust-name').value = '';
         document.getElementById('cust-phone').value = '';
         document.getElementById('cust-address').value = '';
