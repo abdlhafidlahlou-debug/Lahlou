@@ -6,7 +6,7 @@
   <title>متجر الساعات</title>
   <style>
     :root {
-      --primary-color: #581827; /* لون دلال ستايل العنابي */
+      --primary-color: #581827;
       --accent-color: #d4af37;
       --bg-color: #f9f9f9;
     }
@@ -27,7 +27,7 @@
     /* الهيدر الرئيسي */
     header {
       background-color: #fff;
-      padding: 10px 15px;
+      padding: 12px 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -37,15 +37,6 @@
       font-size: 18px;
       font-weight: bold;
       color: var(--primary-color);
-    }
-    .admin-btn {
-      background-color: var(--primary-color);
-      border: none;
-      color: #fff;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
     }
     /* بنر الواجهة */
     .hero-banner {
@@ -65,7 +56,7 @@
       line-height: 1.5;
       opacity: 0.9;
     }
-    /* الأقسام الأربعة السريعة */
+    /* الأقسام الأربعة */
     .categories-bar {
       display: flex;
       gap: 8px;
@@ -147,10 +138,9 @@
     توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر داخل المغرب 🌸
   </div>
 
-  <!-- الهيدر -->
+  <!-- الهيدر (بدون زر تسجيل دخول) -->
   <header>
     <div class="logo">متجر الساعات</div>
-    <button class="admin-btn" onclick="goToLogin()">تسجيل الدخول</button>
   </header>
 
   <!-- بنر ترحيبي -->
@@ -188,12 +178,6 @@
 
     </div>
   </div>
-
-  <script>
-    function goToLogin() {
-      alert("الانتقال إلى صفحة تسجيل الدخول");
-    }
-  </script>
 
 </body>
 </html>
