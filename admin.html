@@ -27,7 +27,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
         }
         h2, h3 { color: var(--primary-color); text-align: center; }
-        input, button { 
+        input, button, label { 
             width: 100%; 
             padding: 12px; 
             margin: 8px 0; 
@@ -35,9 +35,25 @@
             border-radius: 6px;
             font-size: 14px;
         }
-        input { 
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"] { 
             border: 1px solid #ddd; 
             background: #fff;
+        }
+        /* تصميم زر اختيار ملف الصورة */
+        .file-upload-label {
+            display: block;
+            background: #f8f9fa;
+            border: 1px dashed #581827;
+            color: #581827;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .file-upload-label:hover {
+            background: #f1f1f1;
+        }
+        input[type="file"] {
+            display: none;
         }
         button { 
             background: var(--primary-color); 
@@ -50,7 +66,6 @@
         .danger-btn { background: #dc3545; }
         .hidden { display: none; }
         
-        /* قائمة إدارة المنتجات في اللوحة */
         .admin-product-item {
             display: flex;
             justify-content: space-between;
@@ -82,6 +97,12 @@
             font-size: 12px;
             width: auto;
         }
+        #upload-status {
+            font-size: 12px;
+            text-align: center;
+            color: #581827;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -98,12 +119,19 @@
         <p id="login-error" style="color: red; font-size: 12px; text-align: center;"></p>
     </div>
 
-    <!-- قسم إدارة المتجر (يظهر بعد تسجيل الدخول) -->
+    <!-- قسم إدارة المتجر -->
     <div id="admin-section" class="hidden">
         <h3>إضافة منتج جديد</h3>
         <input type="text" id="prod-name" placeholder="اسم المنتج (مثال: ساعة كلاسيكية)">
         <input type="number" id="prod-price" placeholder="السعر (درهم)">
-        <input type="text" id="prod-image" placeholder="رابط صورة المنتج">
+        
+        <!-- حقل اختيار الصورة من الهاتف/الحاسوب -->
+        <label class="file-upload-label" for="prod-file">
+            📁 اختر صورة المنتج من الهاتف
+        </label>
+        <input type="file" id="prod-file" accept="image/*">
+        <p id="upload-status"></p>
+
         <button onclick="addProduct()">حفظ ونشر المنتج</button>
 
         <h3 style="margin-top: 25px;">المنتجات الحالية في المتجر</h3>
@@ -119,6 +147,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
@@ -133,6 +162,14 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // عرض اسم الملف عند اختياره
+    document.getElementById('prod-file').addEventListener('change', function(e) {
+        if(e.target.files[0]) {
+            document.querySelector('.file-upload-label').innerText = "✅ تم اختيار: " + e.target.files[0].name;
+        }
+    });
 
     // تسجيل الدخول
     window.loginAdmin = function() {
@@ -143,7 +180,7 @@
             .then(() => {
                 document.getElementById('login-error').innerText = "";
             })
-            .catch((error) => {
+            .catch(() => {
                 document.getElementById('login-error').innerText = "خطأ في البريد أو كلمة المرور";
             });
     }
@@ -153,47 +190,72 @@
         if (user) {
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('admin-section').classList.remove('hidden');
-            loadAdminProducts(); // تحميل المنتجات للتحكم بها
+            loadAdminProducts();
         } else {
             document.getElementById('login-section').classList.remove('hidden');
             document.getElementById('admin-section').classList.add('hidden');
         }
     });
 
-    // تسجيل الخروج
     window.logoutAdmin = function() {
         signOut(auth);
     }
 
-    // إضافة منتج
+    // إضافة منتج مع رفع الصورة لـ Firebase Storage
     window.addProduct = async function() {
         const name = document.getElementById('prod-name').value;
         const price = document.getElementById('prod-price').value;
-        const image = document.getElementById('prod-image').value;
+        const fileInput = document.getElementById('prod-file');
+        const statusText = document.getElementById('upload-status');
 
         if(!name || !price) {
-            alert("الرجاء ملء اسم المنتج والسعر على الأقل!");
+            alert("الرجاء ملء اسم المنتج والسعر!");
             return;
         }
 
+        let imageUrl = 'https://via.placeholder.com/150';
+
         try {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                statusText.innerText = "جاري رفع الصورة... ⏳";
+                
+                // إنشاء مسار فريد للصورة داخل التخزين
+                const storageRef = ref(storage, 'products/' + Date.now() + '_' + file.name);
+                
+                // رفع الملف
+                const snapshot = await uploadBytes(storageRef, file);
+                
+                // الحصول على رابط الصورة المباشر
+                imageUrl = await getDownloadURL(snapshot.ref);
+                statusText.innerText = "تم رفع الصورة بنجاح! ✔️";
+            }
+
+            // حفظ بيانات المنتج في Firestore
             await addDoc(collection(db, "products"), {
                 name: name,
                 price: Number(price),
-                image: image || 'https://via.placeholder.com/150',
+                image: imageUrl,
                 createdAt: new Date()
             });
-            alert("تم إضافة المنتج بنجاح ونشره في المتجر!");
+
+            alert("تم إضافة المنتج ونشره في المتجر بنجاح!");
+            
+            // إعادة ضبط الحقول
             document.getElementById('prod-name').value = '';
             document.getElementById('prod-price').value = '';
-            document.getElementById('prod-image').value = '';
-            loadAdminProducts(); // تحديث القائمة
+            fileInput.value = '';
+            document.querySelector('.file-upload-label').innerText = "📁 اختر صورة المنتج من الهاتف";
+            statusText.innerText = '';
+            
+            loadAdminProducts();
         } catch (e) {
-            alert("حدث خطأ أثناء الإضافة: " + e.message);
+            alert("حدث خطأ أثناء النشر: " + e.message);
+            statusText.innerText = '';
         }
     }
 
-    // تحميل المنتجات داخل لوحة التحكم مع زر الحذف
+    // تحميل المنتجات للتحكم بها
     async function loadAdminProducts() {
         const listDiv = document.getElementById('admin-products-list');
         try {
@@ -222,13 +284,13 @@
                 listDiv.appendChild(item);
             });
         } catch (error) {
-            console.error("Error loading admin products:", error);
+            console.error("Error loading products:", error);
         }
     }
 
     // حذف منتج
     window.deleteProduct = async function(id) {
-        if(confirm("هل أنت متكد من حذف هذا المنتج؟")) {
+        if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
             try {
                 await deleteDoc(doc(db, "products", id));
                 alert("تم حذف المنتج بنجاح");
