@@ -3,20 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lahlou | لوحة التحكم</title>
+    <title>Lahlou | لوحة التحكم الاحترافية</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; direction: rtl; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input, button { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
-        button { background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #0056b3; }
+        :root {
+            --primary-color: #581827;
+            --accent-color: #d4af37;
+            --bg-color: #f4f4f4;
+        }
+        body { 
+            font-family: Tahoma, sans-serif; 
+            background: var(--bg-color); 
+            margin: 0; 
+            padding: 15px; 
+            direction: rtl; 
+            color: #333;
+        }
+        .container { 
+            max-width: 500px; 
+            margin: auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
+        }
+        h2, h3 { color: var(--primary-color); text-align: center; }
+        input, button { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            box-sizing: border-box; 
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        input { 
+            border: 1px solid #ddd; 
+            background: #fff;
+        }
+        button { 
+            background: var(--primary-color); 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        button:hover { opacity: 0.9; }
+        .danger-btn { background: #dc3545; }
         .hidden { display: none; }
+        
+        /* قائمة إدارة المنتجات في اللوحة */
+        .admin-product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+        .admin-product-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .admin-product-info {
+            flex-grow: 1;
+            padding: 0 10px;
+            font-size: 13px;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            width: auto;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>لوحة تحكم متجر Lahlou</h2>
+    <h2>لوحة تحكم Lahlou</h2>
 
     <!-- قسم تسجيل الدخول -->
     <div id="login-section">
@@ -24,24 +95,30 @@
         <input type="email" id="email" placeholder="البريد الإلكتروني">
         <input type="password" id="password" placeholder="كلمة المرور">
         <button onclick="loginAdmin()">دخول</button>
-        <p id="login-error" style="color: red;"></p>
+        <p id="login-error" style="color: red; font-size: 12px; text-align: center;"></p>
     </div>
 
-    <!-- قسم إدارة المنتجات -->
+    <!-- قسم إدارة المتجر (يظهر بعد تسجيل الدخول) -->
     <div id="admin-section" class="hidden">
-        <h3>إضافة منتج جديد لمتجر Lahlou</h3>
-        <input type="text" id="prod-name" placeholder="اسم المنتج">
-        <input type="number" id="prod-price" placeholder="السعر">
+        <h3>إضافة منتج جديد</h3>
+        <input type="text" id="prod-name" placeholder="اسم المنتج (مثال: ساعة كلاسيكية)">
+        <input type="number" id="prod-price" placeholder="السعر (درهم)">
         <input type="text" id="prod-image" placeholder="رابط صورة المنتج">
         <button onclick="addProduct()">حفظ ونشر المنتج</button>
-        <button onclick="logoutAdmin()" style="background: #dc3545; margin-top: 20px;">تسجيل الخروج</button>
+
+        <h3 style="margin-top: 25px;">المنتجات الحالية في المتجر</h3>
+        <div id="admin-products-list">
+            <p style="text-align: center; color: #777;">جاري التحميل...</p>
+        </div>
+
+        <button onclick="logoutAdmin()" class="danger-btn" style="margin-top: 30px;">تسجيل الخروج</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
@@ -57,40 +134,45 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // تسجيل الدخول
     window.loginAdmin = function() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
         signInWithEmailAndPassword(auth, email, password)
             .then(() => {
-                alert("تم تسجيل الدخول بنجاح!");
+                document.getElementById('login-error').innerText = "";
             })
             .catch((error) => {
-                document.getElementById('login-error').innerText = "خطأ في البيانات: " + error.message;
+                document.getElementById('login-error').innerText = "خطأ في البريد أو كلمة المرور";
             });
     }
 
+    // مراقبة حالة المصادقة
     onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('admin-section').classList.remove('hidden');
+            loadAdminProducts(); // تحميل المنتجات للتحكم بها
         } else {
             document.getElementById('login-section').classList.remove('hidden');
             document.getElementById('admin-section').classList.add('hidden');
         }
     });
 
+    // تسجيل الخروج
     window.logoutAdmin = function() {
         signOut(auth);
     }
 
+    // إضافة منتج
     window.addProduct = async function() {
         const name = document.getElementById('prod-name').value;
         const price = document.getElementById('prod-price').value;
         const image = document.getElementById('prod-image').value;
 
         if(!name || !price) {
-            alert("الرجاء ملء الحقول الأساسية!");
+            alert("الرجاء ملء اسم المنتج والسعر على الأقل!");
             return;
         }
 
@@ -98,15 +180,62 @@
             await addDoc(collection(db, "products"), {
                 name: name,
                 price: Number(price),
-                image: image,
+                image: image || 'https://via.placeholder.com/150',
                 createdAt: new Date()
             });
-            alert("تم إضافة المنتج بنجاح!");
+            alert("تم إضافة المنتج بنجاح ونشره في المتجر!");
             document.getElementById('prod-name').value = '';
             document.getElementById('prod-price').value = '';
             document.getElementById('prod-image').value = '';
+            loadAdminProducts(); // تحديث القائمة
         } catch (e) {
             alert("حدث خطأ أثناء الإضافة: " + e.message);
+        }
+    }
+
+    // تحميل المنتجات داخل لوحة التحكم مع زر الحذف
+    async function loadAdminProducts() {
+        const listDiv = document.getElementById('admin-products-list');
+        try {
+            const querySnapshot = await getDocs(collection(db, "products"));
+            listDiv.innerHTML = '';
+
+            if (querySnapshot.empty) {
+                listDiv.innerHTML = '<p style="text-align: center; color: #777;">لا توجد منتجات حالياً</p>';
+                return;
+            }
+
+            querySnapshot.forEach((documentSnapshot) => {
+                const prod = documentSnapshot.data();
+                const prodId = documentSnapshot.id;
+
+                const item = document.createElement('div');
+                item.className = 'admin-product-item';
+                item.innerHTML = `
+                    <img src="${prod.image}" alt="img">
+                    <div class="admin-product-info">
+                        <strong>${prod.name}</strong><br>
+                        <span>${prod.price} درهم</span>
+                    </div>
+                    <button class="delete-btn" onclick="deleteProduct('${prodId}')">حذف</button>
+                `;
+                listDiv.appendChild(item);
+            });
+        } catch (error) {
+            console.error("Error loading admin products:", error);
+        }
+    }
+
+    // حذف منتج
+    window.deleteProduct = async function(id) {
+        if(confirm("هل أنت متكد من حذف هذا المنتج؟")) {
+            try {
+                await deleteDoc(doc(db, "products", id));
+                alert("تم حذف المنتج بنجاح");
+                loadAdminProducts();
+            } catch (e) {
+                alert("خطأ أثناء الحذف: " + e.message);
+            }
         }
     }
 </script>
