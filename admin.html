@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lahlou | لوحة التحكم الاحترافية</title>
+    <title>Lahlou | لوحة التحكم</title>
     <style>
         :root {
             --primary-color: #581827;
@@ -27,7 +27,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
         }
         h2, h3 { color: var(--primary-color); text-align: center; }
-        input, button, label { 
+        input, button { 
             width: 100%; 
             padding: 12px; 
             margin: 8px 0; 
@@ -35,25 +35,9 @@
             border-radius: 6px;
             font-size: 14px;
         }
-        input[type="text"], input[type="number"], input[type="email"], input[type="password"] { 
+        input { 
             border: 1px solid #ddd; 
             background: #fff;
-        }
-        /* تصميم زر اختيار ملف الصورة */
-        .file-upload-label {
-            display: block;
-            background: #f8f9fa;
-            border: 1px dashed #581827;
-            color: #581827;
-            text-align: center;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .file-upload-label:hover {
-            background: #f1f1f1;
-        }
-        input[type="file"] {
-            display: none;
         }
         button { 
             background: var(--primary-color); 
@@ -97,12 +81,6 @@
             font-size: 12px;
             width: auto;
         }
-        #upload-status {
-            font-size: 12px;
-            text-align: center;
-            color: #581827;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -124,14 +102,8 @@
         <h3>إضافة منتج جديد</h3>
         <input type="text" id="prod-name" placeholder="اسم المنتج (مثال: ساعة كلاسيكية)">
         <input type="number" id="prod-price" placeholder="السعر (درهم)">
+        <input type="text" id="prod-image" placeholder="رابط صورة المنتج (ضع رابط الصورة هنا)">
         
-        <!-- حقل اختيار الصورة من الهاتف/الحاسوب -->
-        <label class="file-upload-label" for="prod-file">
-            📁 اختر صورة المنتج من الهاتف
-        </label>
-        <input type="file" id="prod-file" accept="image/*">
-        <p id="upload-status"></p>
-
         <button onclick="addProduct()">حفظ ونشر المنتج</button>
 
         <h3 style="margin-top: 25px;">المنتجات الحالية في المتجر</h3>
@@ -147,7 +119,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
@@ -162,16 +133,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
-    // عرض اسم الملف عند اختياره
-    document.getElementById('prod-file').addEventListener('change', function(e) {
-        if(e.target.files[0]) {
-            document.querySelector('.file-upload-label').innerText = "✅ تم اختيار: " + e.target.files[0].name;
-        }
-    });
-
-    // تسجيل الدخول
     window.loginAdmin = function() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
@@ -185,7 +147,6 @@
             });
     }
 
-    // مراقبة حالة المصادقة
     onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById('login-section').classList.add('hidden');
@@ -201,61 +162,33 @@
         signOut(auth);
     }
 
-    // إضافة منتج مع رفع الصورة لـ Firebase Storage
     window.addProduct = async function() {
         const name = document.getElementById('prod-name').value;
         const price = document.getElementById('prod-price').value;
-        const fileInput = document.getElementById('prod-file');
-        const statusText = document.getElementById('upload-status');
+        const image = document.getElementById('prod-image').value;
 
         if(!name || !price) {
             alert("الرجاء ملء اسم المنتج والسعر!");
             return;
         }
 
-        let imageUrl = 'https://via.placeholder.com/150';
-
         try {
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                statusText.innerText = "جاري رفع الصورة... ⏳";
-                
-                // إنشاء مسار فريد للصورة داخل التخزين
-                const storageRef = ref(storage, 'products/' + Date.now() + '_' + file.name);
-                
-                // رفع الملف
-                const snapshot = await uploadBytes(storageRef, file);
-                
-                // الحصول على رابط الصورة المباشر
-                imageUrl = await getDownloadURL(snapshot.ref);
-                statusText.innerText = "تم رفع الصورة بنجاح! ✔️";
-            }
-
-            // حفظ بيانات المنتج في Firestore
             await addDoc(collection(db, "products"), {
                 name: name,
                 price: Number(price),
-                image: imageUrl,
+                image: image || 'https://via.placeholder.com/150',
                 createdAt: new Date()
             });
-
             alert("تم إضافة المنتج ونشره في المتجر بنجاح!");
-            
-            // إعادة ضبط الحقول
             document.getElementById('prod-name').value = '';
             document.getElementById('prod-price').value = '';
-            fileInput.value = '';
-            document.querySelector('.file-upload-label').innerText = "📁 اختر صورة المنتج من الهاتف";
-            statusText.innerText = '';
-            
+            document.getElementById('prod-image').value = '';
             loadAdminProducts();
         } catch (e) {
             alert("حدث خطأ أثناء النشر: " + e.message);
-            statusText.innerText = '';
         }
     }
 
-    // تحميل المنتجات للتحكم بها
     async function loadAdminProducts() {
         const listDiv = document.getElementById('admin-products-list');
         try {
@@ -288,7 +221,6 @@
         }
     }
 
-    // حذف منتج
     window.deleteProduct = async function(id) {
         if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
             try {
