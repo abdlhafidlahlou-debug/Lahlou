@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>متجر الساعات</title>
+  <title>متجر Lahlou</title>
   <style>
     :root {
       --primary-color: #581827;
@@ -16,7 +16,6 @@
       background-color: var(--bg-color);
       color: #333;
     }
-    /* شريط الإعلانات العلوي */
     .top-bar {
       background-color: var(--primary-color);
       color: #fff;
@@ -24,7 +23,6 @@
       font-size: 11px;
       padding: 6px;
     }
-    /* الهيدر الرئيسي */
     header {
       background-color: #fff;
       padding: 12px 15px;
@@ -38,7 +36,6 @@
       font-weight: bold;
       color: var(--primary-color);
     }
-    /* بنر الواجهة */
     .hero-banner {
       background-color: var(--primary-color);
       color: #fff;
@@ -56,7 +53,6 @@
       line-height: 1.5;
       opacity: 0.9;
     }
-    /* الأقسام الأربعة */
     .categories-bar {
       display: flex;
       gap: 8px;
@@ -79,7 +75,6 @@
       background: var(--primary-color);
       color: #fff;
     }
-    /* شبكة المنتجات */
     .container {
       padding: 0 10px 20px;
     }
@@ -129,27 +124,30 @@
       cursor: pointer;
       font-size: 12px;
     }
+    .no-products {
+      grid-column: span 2;
+      text-align: center;
+      color: #777;
+      padding: 20px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- شريط الإعلانات -->
   <div class="top-bar">
     توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر داخل المغرب 🌸
   </div>
 
-  <!-- الهيدر (بدون زر تسجيل دخول) -->
   <header>
-    <div class="logo">متجر الساعات</div>
+    <div class="logo">متجر Lahlou</div>
   </header>
 
-  <!-- بنر ترحيبي -->
   <div class="hero-banner">
     <h2>تألقي بأناقة لا تُنسى في كل مناسبة</h2>
     <p>تشكيلة راقية ومختارة بعناية لتناسب أصحاب الذوق الرفيع.</p>
   </div>
 
-  <!-- الأقسام الأربعة -->
   <div class="categories-bar">
     <div class="cat-item active">الكل</div>
     <div class="cat-item">ساعات كلاسيكية</div>
@@ -157,27 +155,62 @@
     <div class="cat-item">إكسسوارات رجالية</div>
   </div>
 
-  <!-- المنتجات -->
   <div class="container">
     <div class="section-title">أحدث التشكيلات</div>
     <div class="products-grid" id="productsGrid">
-      
-      <div class="product-card">
-        <img src="https://via.placeholder.com/150" alt="ساعة">
-        <h3>ساعة كلاسيكية</h3>
-        <p>500 درهم</p>
-        <button class="buy-btn">اطلب الان</button>
-      </div>
-
-      <div class="product-card">
-        <img src="https://via.placeholder.com/150" alt="ساعة">
-        <h3>ساعة رياضية</h3>
-        <p>750 درهم</p>
-        <button class="buy-btn">اطلب الان</button>
-      </div>
-
+      <!-- ستظهر المنتجات هنا تلقائياً من قاعدة البيانات -->
+      <div class="no-products">جاري تحميل المنتجات...</div>
     </div>
   </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
+      authDomain: "lahlou-70ac2.firebaseapp.com",
+      projectId: "lahlou-70ac2",
+      storageBucket: "lahlou-70ac2.firebasestorage.app",
+      messagingSenderId: "1014570891670",
+      appId: "1:1014570891670:web:954e2da1b7881bd7d345b7",
+      measurementId: "G-PGW6J8WXWT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadProducts() {
+      const grid = document.getElementById('productsGrid');
+      try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        grid.innerHTML = '';
+        
+        if (querySnapshot.empty) {
+          grid.innerHTML = '<div class="no-products">لا توجد منتجات مضافة حالياً</div>';
+          return;
+        }
+
+        querySnapshot.forEach((doc) => {
+          const prod = doc.data();
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <img src="${prod.image || 'https://via.placeholder.com/150'}" alt="${prod.name}">
+            <h3>${prod.name}</h3>
+            <p>${prod.price} درهم</p>
+            <button class="buy-btn">اطلب الان</button>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Error loading products: ", error);
+        grid.innerHTML = '<div class="no-products">حدث خطأ أثناء تحميل المنتجات</div>';
+      }
+    }
+
+    loadProducts();
+  </script>
 
 </body>
 </html>
