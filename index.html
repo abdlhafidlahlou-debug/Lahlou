@@ -7,7 +7,7 @@
   <style>
     :root {
       --primary-color: #1a1a1a;
-      --accent-color: #d97706; /* لون برتقالي فاخر */
+      --accent-color: #d97706; /* اللون البرتقالي الفاخر */
       --accent-hover: #b45309;
       --bg-color: #fbfbfb;
       --text-color: #333;
@@ -18,13 +18,15 @@
       background-color: var(--bg-color);
       color: var(--text-color);
     }
+    /* شريط التنبيهات المتحرك */
     .top-bar {
       background-color: var(--primary-color);
       color: #f59e0b;
       text-align: center;
       font-size: 11px;
-      padding: 6px;
+      padding: 8px;
       border-bottom: 1px solid #333;
+      font-weight: bold;
     }
     header {
       background-color: #fff;
@@ -89,9 +91,33 @@
       font-size: 13px;
       cursor: pointer;
     }
-    .hero-btn:hover {
-      background-color: var(--accent-hover);
+    .hero-btn:hover { background-color: var(--accent-hover); }
+
+    /* مميزات المتجر الثقة */
+    .trust-badges {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 0 15px;
+      margin-bottom: 20px;
+      text-align: center;
     }
+    .badge-item {
+      background: #fff;
+      border: 1px solid #eee;
+      padding: 10px 5px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: #555;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .badge-item span {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 3px;
+    }
+
+    /* فئات المنتجات التفاعلية */
     .categories-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -102,18 +128,24 @@
     .cat-box {
       background: #fff;
       border: 1px solid #eee;
-      padding: 15px 5px;
+      padding: 12px 5px;
       border-radius: 10px;
       text-align: center;
       font-size: 12px;
       cursor: pointer;
       box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+    .cat-box:hover, .cat-box.active-cat {
+      border-color: var(--accent-color);
+      background: #fffdf5;
     }
     .cat-box span {
       display: block;
-      font-size: 20px;
+      font-size: 18px;
       margin-bottom: 5px;
     }
+
     .container {
       padding: 0 15px 30px;
     }
@@ -125,6 +157,8 @@
       border-right: 3px solid var(--accent-color);
       padding-right: 8px;
     }
+    
+    /* شبكة المنتجات */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -132,11 +166,14 @@
     }
     .product-card {
       background: #fff;
-      padding: 12px;
+      padding: 10px;
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       text-align: center;
       border: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .product-card img {
       width: 100%;
@@ -146,19 +183,32 @@
       cursor: pointer;
       transition: opacity 0.2s;
     }
-    .product-card img:hover {
-      opacity: 0.9;
-    }
+    .product-card img:hover { opacity: 0.9; }
     .product-card h3 {
-      font-size: 14px;
-      margin: 10px 0 5px;
+      font-size: 13px;
+      margin: 8px 0 4px;
       color: #222;
     }
     .product-card p {
       color: var(--accent-color);
       font-weight: bold;
-      font-size: 14px;
-      margin: 0 0 10px;
+      font-size: 13px;
+      margin: 0 0 8px;
+    }
+    .card-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .details-btn {
+      background-color: #f3f4f6;
+      color: #333;
+      border: none;
+      width: 100%;
+      padding: 6px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 11px;
     }
     .buy-btn {
       background-color: var(--accent-color);
@@ -166,14 +216,12 @@
       border: none;
       width: 100%;
       padding: 8px;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: bold;
     }
-    .buy-btn:hover {
-      background-color: var(--accent-hover);
-    }
+    .buy-btn:hover { background-color: var(--accent-hover); }
     .no-products {
       grid-column: span 2;
       text-align: center;
@@ -274,31 +322,38 @@
 </head>
 <body>
 
+  <!-- شريط التنبيهات المتحرك -->
   <div class="top-bar">
-    توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر داخل المغرب ✨
+    ⚡ توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر لجميع مدن المغرب ✨
   </div>
 
   <header>
     <div class="logo">LAHLOU <span>ACCESSORIES</span></div>
     <div class="nav-links">
       <a href="#" class="active">الرئيسية</a>
-      <a href="#">ساعات</a>
-      <a href="#">أساور</a>
-      <a href="#">خواتم</a>
+      <a href="#productsGrid">المنتجات</a>
     </div>
   </header>
 
   <div class="hero-banner">
     <h2>تألقي بأرقى الإكسسوارات الفاخرة</h2>
     <p>تشكيلة حصرية ومختارة بعناية لتضفي لمسة من الأناقة والتميز على إطلالتك اليومية.</p>
-    <button class="hero-btn" onclick="window.scrollTo({top: 400, behavior: 'smooth'});">تسوقي التشكيلة</button>
+    <button class="hero-btn" onclick="window.scrollTo({top: 450, behavior: 'smooth'});">تسوقي التشكيلة</button>
   </div>
 
+  <!-- أيقونات الثقة ومميزات المتجر -->
+  <div class="trust-badges">
+    <div class="badge-item"><span>🚚</span>توصيل سريع</div>
+    <div class="badge-item"><span>💰</span>الدفع عند الاستلام</div>
+    <div class="badge-item"><span>💎</span>جودة عالية</div>
+  </div>
+
+  <!-- فئات المنتجات التفاعلية (لتصفية المنتجات) -->
   <div class="categories-grid">
-    <div class="cat-box"><span>💍</span>خواتم</div>
-    <div class="cat-box"><span>⌚</span>ساعات</div>
-    <div class="cat-box"><span>📿</span>قلائد</div>
-    <div class="cat-box"><span>💎</span>أساور</div>
+    <div class="cat-box active-cat" onclick="filterCategory('الكل', this)"><span>🛍️</span>الكل</div>
+    <div class="cat-box" onclick="filterCategory('ساعات', this)"><span>⌚</span>ساعات</div>
+    <div class="cat-box" onclick="filterCategory('أساور', this)"><span>💎</span>أساور</div>
+    <div class="cat-box" onclick="filterCategory('خواتم', this)"><span>💍</span>خواتم</div>
   </div>
 
   <div class="container">
@@ -350,34 +405,61 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    let allProducts = [];
     let selectedProduct = null;
 
     async function loadProducts() {
       const grid = document.getElementById('productsGrid');
       try {
         const querySnapshot = await getDocs(collection(db, "products"));
-        grid.innerHTML = '';
+        allProducts = [];
         
-        if (querySnapshot.empty) {
-          grid.innerHTML = '<div class="no-products">لا توجد إكسسوارات مضافة حالياً في المتجر</div>';
-          return;
-        }
-
         querySnapshot.forEach((docSnap) => {
-          const prod = docSnap.data();
-          const card = document.createElement('div');
-          card.className = 'product-card';
-          card.innerHTML = `
-            <img src="${prod.image || 'https://via.placeholder.com/150'}" alt="${prod.name}" onclick='openProductModal(${JSON.stringify(prod)})'>
-            <h3>${prod.name}</h3>
-            <p>${prod.price} درهم</p>
-            <button class="buy-btn" onclick='openProductModal(${JSON.stringify(prod)})'>اطلب الان</button>
-          `;
-          grid.appendChild(card);
+          allProducts.push(docSnap.data());
         });
+
+        displayProducts(allProducts);
       } catch (error) {
         console.error("Error loading products: ", error);
         grid.innerHTML = '<div class="no-products">حدث خطأ أثناء تحميل المنتجات</div>';
+      }
+    }
+
+    function displayProducts(products) {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+      
+      if (products.length === 0) {
+        grid.innerHTML = '<div class="no-products">لا توجد إكسسوارات مضافة حالياً في هذه الفئة</div>';
+        return;
+      }
+
+      products.forEach((prod) => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${prod.image || 'https://via.placeholder.com/150'}" alt="${prod.name}" onclick='openProductModal(${JSON.stringify(prod)})'>
+          <h3>${prod.name}</h3>
+          <p>${prod.price} درهم</p>
+          <div class="card-buttons">
+            <button class="details-btn" onclick='openProductModal(${JSON.stringify(prod)})'>التفاصيل والوصف</button>
+            <button class="buy-btn" onclick='openProductModal(${JSON.stringify(prod)})'>اطلب الان</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // دالة تصفية المنتجات حسب الفئة عند الضغط عليها
+    window.filterCategory = function(category, element) {
+      document.querySelectorAll('.cat-box').forEach(box => box.classList.remove('active-cat'));
+      element.classList.add('active-cat');
+
+      if (category === 'الكل') {
+        displayProducts(allProducts);
+      } else {
+        const filtered = allProducts.filter(p => p.name && p.name.includes(category));
+        displayProducts(filtered);
       }
     }
 
