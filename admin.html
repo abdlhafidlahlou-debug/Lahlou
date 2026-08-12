@@ -1,119 +1,172 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lahlou | لوحة التحكم</title>
-    <style>
-        :root {
-            --primary-color: #1a1a1a;
-            --accent-color: #d4af37;
-            --bg-color: #f4f4f4;
-        }
-        body { 
-            font-family: Tahoma, sans-serif; 
-            background: var(--bg-color); 
-            margin: 0; 
-            padding: 15px; 
-            direction: rtl; 
-            color: #333;
-        }
-        .container { 
-            max-width: 500px; 
-            margin: auto; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 10px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
-        }
-        h2, h3 { color: var(--primary-color); text-align: center; }
-        input, textarea, button { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 8px 0; 
-            box-sizing: border-box; 
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: Tahoma, sans-serif;
-        }
-        input, textarea { border: 1px solid #ddd; background: #fff; }
-        textarea { resize: vertical; height: 80px; }
-        button { background: var(--primary-color); color: white; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { opacity: 0.9; }
-        .danger-btn { background: #dc3545; }
-        .hidden { display: none; }
-        
-        .admin-item {
-            background: #fdfdfd;
-            border: 1px solid #eee;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        .order-card {
-            background: #fff8f8;
-            border: 1px solid #f5c6cb;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        .order-card strong { color: var(--primary-color); }
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            margin-top: 8px;
-            width: auto;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم الأدمن | Lahlou Accessories</title>
+  <style>
+    :root {
+      --primary-color: #1a1a1a;
+      --accent-color: #d97706;
+      --accent-hover: #b45309;
+      --bg-color: #f4f6f8;
+      --text-color: #333;
+    }
+    body {
+      font-family: Tahoma, sans-serif;
+      margin: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 15px;
+    }
+    .admin-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h2 {
+      text-align: center;
+      color: var(--primary-color);
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .card h3 {
+      font-size: 15px;
+      margin-top: 0;
+      color: var(--primary-color);
+      border-right: 3px solid var(--accent-color);
+      padding-right: 8px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 13px;
+      font-family: Tahoma, sans-serif;
+    }
+    button {
+      background-color: var(--accent-color);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button:hover {
+      background-color: var(--accent-hover);
+    }
+    /* جدول الطلبات والتقييمات */
+    .table-box {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #eee;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f9f9f9;
+      color: var(--primary-color);
+    }
+    .review-row-stars {
+      color: #f59e0b;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>لوحة تحكم Lahlou</h2>
+  <div class="admin-container">
+    <h2>لوحة تحكم متجر Lahlou ⚙️</h2>
 
-    <!-- تسجيل الدخول -->
-    <div id="login-section">
-        <h3>تسجيل دخول المسؤول</h3>
-        <input type="email" id="email" placeholder="البريد الإلكتروني">
-        <input type="password" id="password" placeholder="كلمة المرور">
-        <button onclick="loginAdmin()">دخول</button>
-        <p id="login-error" style="color: red; font-size: 12px; text-align: center;"></p>
+    <!-- قسم إضافة منتج جديد -->
+    <div class="card">
+      <h3>إضافة منتج جديد للمتجر</h3>
+      <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: ساعة يد فاخرة / أساور نسائية)">
+      <input type="number" id="p-price" placeholder="السعر بالدرهم (مثلاً: 250)">
+      <input type="text" id="p-image" placeholder="رابط صورة المنتج (رابط مباشر للصورة)">
+      <textarea id="p-desc" rows="3" placeholder="وصف المنتج ومميزاته..."></textarea>
+      <button onclick="addProduct()">نشر المنتج في المتجر</button>
     </div>
 
-    <!-- لوحة التحكم الرئيسية -->
-    <div id="admin-section" class="hidden">
-        <h3>إضافة منتج جديد</h3>
-        <input type="text" id="prod-name" placeholder="اسم المنتج">
-        <input type="number" id="prod-price" placeholder="السعر (درهم)">
-        <input type="text" id="prod-image" placeholder="رابط صورة المنتج (مقاس 9:16)">
-        <textarea id="prod-desc" placeholder="وصف المنتج (مميزات المنتج، الخامات، تفاصيل الإكسسوار...)"></textarea>
-        <button onclick="addProduct()">حفظ ونشر المنتج</button>
+    <!-- قسم إعدادات روابط وسائل التواصل الاجتماعي -->
+    <div class="card">
+      <h3>إعدادات روابط وسائل التواصل الاجتماعي</h3>
+      <p style="font-size: 11px; color: #666; margin-top: 0;">قم بوضع روابط حساباتك الرسمية لكي تظهر في أسفل المتجر:</p>
+      
+      <label style="font-size: 12px; font-weight: bold;">رابط واتساب (مباشر للمحادثة):</label>
+      <input type="text" id="social-wa" placeholder="مثلاً: https://wa.me/212600000000">
 
-        <h3 style="margin-top: 25px;">📦 طلبات الزبناء الواردة</h3>
-        <div id="admin-orders-list">
-            <p style="text-align: center; color: #777;">جاري تحميل الطلبات...</p>
-        </div>
+      <label style="font-size: 12px; font-weight: bold;">رابط فيسبوك:</label>
+      <input type="text" id="social-fb" placeholder="مثلاً: https://facebook.com/yourpage">
 
-        <h3 style="margin-top: 25px;">🛍️ المنتجات الحالية</h3>
-        <div id="admin-products-list">
-            <p style="text-align: center; color: #777;">جاري التحميل...</p>
-        </div>
+      <label style="font-size: 12px; font-weight: bold;">رابط انستغرام:</label>
+      <input type="text" id="social-ig" placeholder="مثلاً: https://instagram.com/yourprofile">
 
-        <button onclick="logoutAdmin()" class="danger-btn" style="margin-top: 30px;">تسجيل الخروج</button>
+      <button onclick="saveSocialLinks()">حفظ الروابط</button>
     </div>
-</div>
 
-<script type="module">
+    <!-- قسم طلبات الزبناء الواردة -->
+    <div class="card">
+      <h3>طلبات الزبناء الواردة</h3>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>الزبون</th>
+              <th>الهاتف والمدينة</th>
+              <th>المنتج</th>
+              <th>العنوان</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            <tr><td colspan="4" style="color: #777;">جاري تحميل الطلبات...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- قسم تلقي آراء وتقييمات الزبناء -->
+    <div class="card">
+      <h3>آراء وتقييمات الزبناء الواردة</h3>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>التقييم</th>
+              <th>الرأي / التعليق</th>
+            </tr>
+          </thead>
+          <tbody id="reviewsTableBody">
+            <tr><td colspan="3" style="color: #777;">جاري تحميل التقييمات...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
@@ -126,96 +179,113 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    window.loginAdmin = function() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        signInWithEmailAndPassword(auth, email, password)
-            .catch(() => { document.getElementById('login-error').innerText = "خطأ في البيانات"; });
-    }
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('admin-section').classList.remove('hidden');
-            loadAdminData();
-        } else {
-            document.getElementById('login-section').classList.remove('hidden');
-            document.getElementById('admin-section').classList.add('hidden');
-        }
-    });
-
-    window.logoutAdmin = function() { signOut(auth); }
-
+    // دالة إضافة منتج
     window.addProduct = async function() {
-        const name = document.getElementById('prod-name').value;
-        const price = document.getElementById('prod-price').value;
-        const image = document.getElementById('prod-image').value;
-        const description = document.getElementById('prod-desc').value;
+      const name = document.getElementById('p-name').value;
+      const price = document.getElementById('p-price').value;
+      const image = document.getElementById('p-image').value;
+      const description = document.getElementById('p-desc').value;
 
-        if(!name || !price) { alert("املأ الاسم والسعر على الأقل!"); return; }
+      if (!name || !price || !image) {
+        alert("الرجاء إدخال اسم المنتج، السعر، ورابط الصورة على الأقل!");
+        return;
+      }
 
+      try {
         await addDoc(collection(db, "products"), {
-            name, 
-            price: Number(price), 
-            image: image || 'https://via.placeholder.com/150', 
-            description: description || '',
-            createdAt: new Date()
+          name,
+          price,
+          image,
+          description,
+          createdAt: new Date()
         });
-        alert("تم نشر المنتج بنجاح!");
-        document.getElementById('prod-name').value = '';
-        document.getElementById('prod-price').value = '';
-        document.getElementById('prod-image').value = '';
-        document.getElementById('prod-desc').value = '';
-        loadAdminData();
-    }
+        alert("تمت إضافة المنتج بنجاح إلى المتجر!");
+        document.getElementById('p-name').value = '';
+        document.getElementById('p-price').value = '';
+        document.getElementById('p-image').value = '';
+        document.getElementById('p-desc').value = '';
+      } catch (e) {
+        alert("حدث خطأ أثناء الإضافة: " + e.message);
+      }
+    };
 
+    // حفظ روابط وسائل التواصل الاجتماعي (محلياً في المتصفح ليتم ربطها بسهولة)
+    window.saveSocialLinks = function() {
+      const wa = document.getElementById('social-wa').value;
+      const fb = document.getElementById('social-fb').value;
+      const ig = document.getElementById('social-ig').value;
+
+      localStorage.setItem('admin_wa', wa);
+      localStorage.setItem('admin_fb', fb);
+      localStorage.setItem('admin_ig', ig);
+
+      alert("تم حفظ الروابط بنجاح! (يمكنك الآن ربطها بصفحة المتجر الرئيسية)");
+    };
+
+    // تحميل الطلبات والتقييمات للوحة الأدمن
     async function loadAdminData() {
-        const ordersDiv = document.getElementById('admin-orders-list');
+      // تحميل الطلبات
+      try {
         const ordersSnap = await getDocs(collection(db, "orders"));
-        ordersDiv.innerHTML = ordersSnap.empty ? '<p style="text-align: center; color: #777;">لا توجد طلبات جديدة</p>' : '';
-        
-        ordersSnap.forEach((d) => {
-            const o = d.data();
-            ordersDiv.innerHTML += `
-                <div class="order-card">
-                    <strong>🛒 المنتج المطلوب:</strong> <span style="color:#d4af37; font-weight:bold;">${o.productName}</span><br>
-                    <strong>💰 الثمن:</strong> ${o.productPrice} درهم<br>
-                    <strong>👤 اسم الزبون:</strong> ${o.customerName}<br>
-                    <strong>📞 الهاتف:</strong> <a href="tel:${o.customerPhone}">${o.customerPhone}</a><br>
-                    <strong>📍 العنوان والمدينة:</strong> ${o.customerAddress}, ${o.customerCity}<br>
-                    <button class="delete-btn" onclick="deleteItem('orders', '${d.id}')">حذف الطلب</button>
-                </div>
-            `;
-        });
+        const ordersBody = document.getElementById('ordersTableBody');
+        ordersBody.innerHTML = '';
 
-        const prodsDiv = document.getElementById('admin-products-list');
-        const prodsSnap = await getDocs(collection(db, "products"));
-        prodsDiv.innerHTML = prodsSnap.empty ? '<p style="text-align: center; color: #777;">لا توجد منتجات</p>' : '';
-        
-        prodsSnap.forEach((d) => {
-            const p = d.data();
-            prodsDiv.innerHTML += `
-                <div class="admin-item" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <strong>${p.name}</strong> - ${p.price} درهم<br>
-                        <small style="color:#666;">${p.description ? p.description.substring(0, 40) + '...' : 'بدون وصف'}</small>
-                    </div>
-                    <button class="delete-btn" onclick="deleteItem('products', '${d.id}')">حذف</button>
-                </div>
+        if (ordersSnap.empty) {
+          ordersBody.innerHTML = '<tr><td colspan="4" style="color: #777;">لا توجد طلبات حتى الآن</td></tr>';
+        } else {
+          ordersSnap.forEach((docSnap) => {
+            const o = docSnap.data();
+            ordersBody.innerHTML += `
+              <tr>
+                <td><b>${o.customerName || 'بدون اسم'}</b></td>
+                <td>${o.customerPhone || ''}<br>${o.customerCity || ''}</td>
+                <td>${o.productName || ''} (${o.productPrice || ''} دج)</td>
+                <td>${o.customerAddress || ''}</td>
+              </tr>
             `;
-        });
-    }
-
-    window.deleteItem = async function(col, id) {
-        if(confirm("هل أنت متأكد من الحذف؟")) {
-            await deleteDoc(doc(db, col, id));
-            loadAdminData();
+          });
         }
+      } catch (e) {
+        console.error("Error loading orders:", e);
+      }
+
+      // تحميل تقييمات الزبناء
+      try {
+        const reviewsSnap = await getDocs(collection(db, "reviews"));
+        const reviewsBody = document.getElementById('reviewsTableBody');
+        reviewsBody.innerHTML = '';
+
+        if (reviewsSnap.empty) {
+          reviewsBody.innerHTML = '<tr><td colspan="3" style="color: #777;">لا توجد تقييمات متلقاة حتى الآن</td></tr>';
+        } else {
+          reviewsSnap.forEach((docSnap) => {
+            const r = docSnap.data();
+            const stars = '★'.repeat(Number(r.rating) || 5);
+            reviewsBody.innerHTML += `
+              <tr>
+                <td><b>${r.name || 'زائر'}</b></td>
+                <td><span class="review-row-stars">${stars}</span></td>
+                <td style="text-align: right; padding: 5px 10px;">${r.comment || ''}</td>
+              </tr>
+            `;
+          });
+        }
+      } catch (e) {
+        console.error("Error loading reviews:", e);
+      }
     }
-</script>
+
+    // استرجاع الروابط المحفوظة مسبقاً في الإعدادات إن وجدت
+    window.onload = function() {
+      if(localStorage.getItem('admin_wa')) document.getElementById('social-wa').value = localStorage.getItem('admin_wa');
+      if(localStorage.getItem('admin_fb')) document.getElementById('social-fb').value = localStorage.getItem('admin_fb');
+      if(localStorage.getItem('admin_ig')) document.getElementById('social-ig').value = localStorage.getItem('admin_ig');
+      
+      loadAdminData();
+    };
+  </script>
 
 </body>
 </html>
