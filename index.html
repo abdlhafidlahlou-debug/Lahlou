@@ -60,26 +60,35 @@
       border-bottom: 2px solid var(--accent-color);
       padding-bottom: 2px;
     }
+
+    /* البانر الرئيسي مع خلفية صور الساعات والخواتم */
     .hero-banner {
-      background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+      position: relative;
+      background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+                  url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1080&h=600&fit=crop');
+      background-size: cover;
+      background-position: center;
       color: #fff;
       margin: 15px;
-      padding: 30px 20px;
+      padding: 40px 20px;
       border-radius: 12px;
       text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      overflow: hidden;
     }
     .hero-banner h2 {
       font-size: 20px;
       margin: 0 0 10px;
       color: var(--accent-color);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
     .hero-banner p {
       font-size: 13px;
       line-height: 1.6;
-      opacity: 0.9;
+      opacity: 0.95;
       max-width: 400px;
       margin: 0 auto 15px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
     .hero-btn {
       background-color: var(--accent-color);
@@ -90,6 +99,7 @@
       font-weight: bold;
       font-size: 13px;
       cursor: pointer;
+      box-shadow: 0 4px 10px rgba(217, 119, 6, 0.4);
     }
     .hero-btn:hover { background-color: var(--accent-hover); }
 
@@ -335,6 +345,7 @@
     </div>
   </header>
 
+  <!-- البانر مع صورة الخلفية للساعات والإكسسوارات -->
   <div class="hero-banner">
     <h2>تألقي بأرقى الإكسسوارات الفاخرة</h2>
     <p>تشكيلة حصرية ومختارة بعناية لتضفي لمسة من الأناقة والتميز على إطلالتك اليومية.</p>
@@ -450,7 +461,6 @@
       });
     }
 
-    // دالة تصفية المنتجات حسب الفئة عند الضغط عليها
     window.filterCategory = function(category, element) {
       document.querySelectorAll('.cat-box').forEach(box => box.classList.remove('active-cat'));
       element.classList.add('active-cat');
