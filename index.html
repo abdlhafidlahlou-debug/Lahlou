@@ -18,16 +18,21 @@
       background-color: var(--bg-color);
       color: var(--text-color);
     }
-    /* شريط التنبيهات المتحرك */
+    /* شريط التنبيهات المتحرك من اليسار إلى اليمين */
     .top-bar {
       background-color: var(--primary-color);
       color: #f59e0b;
-      text-align: center;
       font-size: 11px;
-      padding: 8px;
+      padding: 8px 0;
       border-bottom: 1px solid #333;
       font-weight: bold;
+      overflow: hidden;
+      white-space: nowrap;
     }
+    .top-bar marquee {
+      width: 100%;
+    }
+
     header {
       background-color: #fff;
       padding: 15px 20px;
@@ -392,7 +397,7 @@
     .confirm-order-btn:hover { background: var(--accent-hover); }
     .cancel-order-btn { background: #eee; color: #333; }
 
-    /* تصميم نجوم التقييم التفاعلية داخل واجهة الآراء */
+    /* تصميم نجوم التقييم التفاعلية */
     .star-rating-select {
       display: flex;
       gap: 8px;
@@ -406,7 +411,7 @@
       color: #f59e0b;
     }
 
-    /* قائمة عرض اراء المشترين داخل الواجهة */
+    /* قائمة عرض اراء المشترين */
     .reviews-list-box {
       max-height: 200px;
       overflow-y: auto;
@@ -460,21 +465,47 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
+    /* الفوتر وشبكة وسائل التواصل الاجتماعي للأدمن */
     footer {
       background-color: var(--primary-color);
       color: #aaa;
       text-align: center;
-      padding: 25px 20px 70px; /* مساحة لكي لا يغطي الزر العائم محتوى الفوتر */
+      padding: 25px 20px 70px;
       font-size: 12px;
       margin-top: 30px;
     }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+    .social-links a {
+      color: #fff;
+      background: #333;
+      padding: 8px 12px;
+      border-radius: 50%;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      transition: background 0.2s;
+    }
+    .social-links a.whatsapp:hover { background: #25d366; }
+    .social-links a.facebook:hover { background: #1877f2; }
+    .social-links a.instagram:hover { background: #e4405f; }
   </style>
 </head>
 <body>
 
-  <!-- شريط التنبيهات المتحرك -->
+  <!-- شريط التنبيهات المتحرك (من اليسار إلى اليمين) -->
   <div class="top-bar">
-    ⚡ توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر لجميع مدن المغرب ✨
+    <marquee direction="right" scrollamount="5">
+      ⚡ توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر لجميع مدن المغرب ✨
+    </marquee>
   </div>
 
   <header>
@@ -485,7 +516,7 @@
     </div>
   </header>
 
-  <!-- البانر مع صورة الخلفية للساعات والإكسسوارات -->
+  <!-- البانر الرئيسي -->
   <div class="hero-banner">
     <h2>تألقي بأرقى الإكسسوارات الفاخرة</h2>
     <p>تشكيلة حصرية ومختارة بعناية لتضفي لمسة من الأناقة والتميز على إطلالتك اليومية.</p>
@@ -573,25 +604,12 @@
         <button class="cancel-order-btn" onclick="closeReviewsModal()">إغلاق</button>
       </div>
 
-      <!-- قسم عرض آراء المشترين السابقة والحديثة -->
+      <!-- قسم عرض آراء المشترين الحقيقية -->
       <div style="font-weight: bold; font-size: 13px; color: var(--primary-color); margin-bottom: 5px; border-right: 3px solid var(--accent-color); padding-right: 6px;">
-        آراء المشترين السابقين:
+        آراء المشترين:
       </div>
       <div class="reviews-list-box" id="reviewsListBox">
-        <div class="customer-review-item">
-          <div class="rev-header">
-            <span>يوسف من الدار البيضاء</span>
-            <span class="rev-stars">★★★★★</span>
-          </div>
-          <p style="margin: 0; color: #555;">الصراحة الجودة ممتازة جداً والساعة وصلتني في غضون 48 ساعة كما وعدتم.</p>
-        </div>
-        <div class="customer-review-item">
-          <div class="rev-header">
-            <span>إيمان من الرباط</span>
-            <span class="rev-stars">★★★★★</span>
-          </div>
-          <p style="margin: 0; color: #555;">الإكسسوارات راقية وفخمة في الواقع أجمل من الصور بكثير.</p>
-        </div>
+        <div style="text-align: center; color: #777; font-size: 11px; padding: 10px;">جاري تحميل التقييمات...</div>
       </div>
     </div>
   </div>
@@ -602,7 +620,14 @@
     <p id="toast-text" style="margin: 0; color: #555;">قام للتو بطلب ساعة كلاسيكية فاخرة!</p>
   </div>
 
+  <!-- الفوتر مع روابط وسائل التواصل الاجتماعي المخصصة للأدمن -->
   <footer>
+    <div class="social-links">
+      <!-- استبدل علامت # برابط حسابك على واتساب، فيسبوك أو انستغرام -->
+      <a href="رابط_واتساب_هنا" target="_blank" class="whatsapp" title="WhatsApp">💬</a>
+      <a href="رابط_فيسبوك_هنا" target="_blank" class="facebook" title="Facebook">f</a>
+      <a href="رابط_انستغرام_هنا" target="_blank" class="instagram" title="Instagram">📸</a>
+    </div>
     <p>© 2026 Lahlou Accessories — جميع الحقوق محفوظة</p>
   </footer>
 
@@ -720,7 +745,6 @@
       document.getElementById('productModal').style.display = 'none';
     }
 
-    // دوال واجهة التقييمات والآراء
     window.openReviewsModal = function() {
       document.getElementById('reviewsModal').style.display = 'flex';
     }
@@ -773,22 +797,12 @@
         const querySnapshot = await getDocs(collection(db, "reviews"));
         const listBox = document.getElementById('reviewsListBox');
         
-        let reviewsHTML = `
-          <div class="customer-review-item">
-            <div class="rev-header">
-              <span>يوسف من الدار البيضاء</span>
-              <span class="rev-stars">★★★★★</span>
-            </div>
-            <p style="margin: 0; color: #555;">الصراحة الجودة ممتازة جداً والساعة وصلتني في غضون 48 ساعة كما وعدتم.</p>
-          </div>
-          <div class="customer-review-item">
-            <div class="rev-header">
-              <span>إيمان من الرباط</span>
-              <span class="rev-stars">★★★★★</span>
-            </div>
-            <p style="margin: 0; color: #555;">الإكسسوارات راقية وفخمة في الواقع أجمل من الصور بكثير.</p>
-          </div>
-        `;
+        let reviewsHTML = '';
+
+        if (querySnapshot.empty) {
+          listBox.innerHTML = '<div style="text-align: center; color: #777; font-size: 11px; padding: 10px;">لا توجد تقييمات مضافة بعد. كن أول من يقيم!</div>';
+          return;
+        }
 
         querySnapshot.forEach((docSnap) => {
           const rev = docSnap.data();
@@ -807,6 +821,7 @@
         listBox.innerHTML = reviewsHTML;
       } catch (err) {
         console.error("Error loading reviews:", err);
+        document.getElementById('reviewsListBox').innerHTML = '<div style="text-align: center; color: #777; font-size: 11px; padding: 10px;">تعذر تحميل التقييمات</div>';
       }
     }
 
