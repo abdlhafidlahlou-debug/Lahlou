@@ -9,6 +9,8 @@
       --primary-color: #1a1a1a;
       --accent-color: #d97706;
       --accent-hover: #b45309;
+      --danger-color: #dc2626;
+      --danger-hover: #b91c1c;
       --bg-color: #f4f6f8;
       --text-color: #333;
     }
@@ -67,7 +69,16 @@
     button:hover {
       background-color: var(--accent-hover);
     }
-    /* جدول الطلبات والتقييمات */
+    .delete-btn {
+      background-color: var(--danger-color);
+      padding: 5px 10px;
+      font-size: 11px;
+      width: auto;
+    }
+    .delete-btn:hover {
+      background-color: var(--danger-hover);
+    }
+    /* جدول البيانات */
     .table-box {
       overflow-x: auto;
     }
@@ -106,6 +117,25 @@
       <button onclick="addProduct()">نشر المنتج في المتجر</button>
     </div>
 
+    <!-- قسم إدارة المنتجات الحالية (مع زر الحذف) -->
+    <div class="card">
+      <h3>إدارة المنتجات (حذف / معاينة)</h3>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>المنتج</th>
+              <th>السعر</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="productsTableBody">
+            <tr><td colspan="3" style="color: #777;">جاري تحميل المنتجات...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- قسم إعدادات روابط وسائل التواصل الاجتماعي -->
     <div class="card">
       <h3>إعدادات روابط وسائل التواصل الاجتماعي</h3>
@@ -123,7 +153,7 @@
       <button onclick="saveSocialLinks()">حفظ الروابط</button>
     </div>
 
-    <!-- قسم طلبات الزبناء الواردة -->
+    <!-- قسم طلبات الزبناء الواردة (مع صلاحية الحذف) -->
     <div class="card">
       <h3>طلبات الزبناء الواردة</h3>
       <div class="table-box">
@@ -133,7 +163,7 @@
               <th>الزبون</th>
               <th>الهاتف والمدينة</th>
               <th>المنتج</th>
-              <th>العنوان</th>
+              <th>إجراء</th>
             </tr>
           </thead>
           <tbody id="ordersTableBody">
@@ -143,16 +173,16 @@
       </div>
     </div>
 
-    <!-- قسم تلقي آراء وتقييمات الزبناء -->
+    <!-- قسم تلقي وإدارة آراء وتقييمات الزبناء (مع صلاحية الحذف) -->
     <div class="card">
       <h3>آراء وتقييمات الزبناء الواردة</h3>
       <div class="table-box">
         <table>
           <thead>
             <tr>
-              <th>الاسم</th>
-              <th>التقييم</th>
+              <th>الاسم والتقييم</th>
               <th>الرأي / التعليق</th>
+              <th>إجراء</th>
             </tr>
           </thead>
           <tbody id="reviewsTableBody">
@@ -166,7 +196,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
@@ -181,7 +211,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // دالة إضافة منتج
+    // دالة إضافة منتج جديد
     window.addProduct = async function() {
       const name = document.getElementById('p-name').value;
       const price = document.getElementById('p-price').value;
@@ -206,12 +236,52 @@
         document.getElementById('p-price').value = '';
         document.getElementById('p-image').value = '';
         document.getElementById('p-desc').value = '';
+        loadAdminData();
       } catch (e) {
         alert("حدث خطأ أثناء الإضافة: " + e.message);
       }
     };
 
-    // حفظ روابط وسائل التواصل الاجتماعي (محلياً في المتصفح ليتم ربطها بسهولة)
+    // دالة حذف منتج
+    window.deleteProduct = async function(id) {
+      if (confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟")) {
+        try {
+          await deleteDoc(doc(db, "products", id));
+          alert("تم حذف المنتج بنجاح.");
+          loadAdminData();
+        } catch (e) {
+          alert("خطأ أثناء الحذف: " + e.message);
+        }
+      }
+    };
+
+    // دالة حذف طلب زبون
+    window.deleteOrder = async function(id) {
+      if (confirm("هل أنت متأكد من حذف هذا الطلب؟")) {
+        try {
+          await deleteDoc(doc(db, "orders", id));
+          alert("تم حذف الطلب بنجاح.");
+          loadAdminData();
+        } catch (e) {
+          alert("خطأ أثناء الحذف: " + e.message);
+        }
+      }
+    };
+
+    // دالة حذف تقييم أو رأي عميل
+    window.deleteReview = async function(id) {
+      if (confirm("هل أنت متأكد من حذف هذا التقييم؟")) {
+        try {
+          await deleteDoc(doc(db, "reviews", id));
+          alert("تم حذف التقييم بنجاح.");
+          loadAdminData();
+        } catch (e) {
+          alert("خطأ أثناء الحذف: " + e.message);
+        }
+      }
+    };
+
+    // حفظ روابط وسائل التواصل الاجتماعي
     window.saveSocialLinks = function() {
       const wa = document.getElementById('social-wa').value;
       const fb = document.getElementById('social-fb').value;
@@ -221,12 +291,37 @@
       localStorage.setItem('admin_fb', fb);
       localStorage.setItem('admin_ig', ig);
 
-      alert("تم حفظ الروابط بنجاح! (يمكنك الآن ربطها بصفحة المتجر الرئيسية)");
+      alert("تم حفظ الروابط بنجاح!");
     };
 
-    // تحميل الطلبات والتقييمات للوحة الأدمن
+    // تحميل جميع بيانات الأدمن (المنتجات، الطلبات، والتقييمات مع أزرار الحذف)
     async function loadAdminData() {
-      // تحميل الطلبات
+      // 1. تحميل المنتجات وإدارتها
+      try {
+        const prodSnap = await getDocs(collection(db, "products"));
+        const prodBody = document.getElementById('productsTableBody');
+        prodBody.innerHTML = '';
+
+        if (prodSnap.empty) {
+          prodBody.innerHTML = '<tr><td colspan="3" style="color: #777;">لا توجد منتجات مضافة</td></tr>';
+        } else {
+          prodSnap.forEach((docSnap) => {
+            const p = docSnap.data();
+            const id = docSnap.id;
+            prodBody.innerHTML += `
+              <tr>
+                <td><b>${p.name || ''}</b></td>
+                <td>${p.price || ''} دج</td>
+                <td><button class="delete-btn" onclick="deleteProduct('${id}')">حذف</button></td>
+              </tr>
+            `;
+          });
+        }
+      } catch (e) {
+        console.error("Error loading products:", e);
+      }
+
+      // 2. تحميل الطلبات
       try {
         const ordersSnap = await getDocs(collection(db, "orders"));
         const ordersBody = document.getElementById('ordersTableBody');
@@ -237,12 +332,13 @@
         } else {
           ordersSnap.forEach((docSnap) => {
             const o = docSnap.data();
+            const id = docSnap.id;
             ordersBody.innerHTML += `
               <tr>
-                <td><b>${o.customerName || 'بدون اسم'}</b></td>
+                <td><b>${o.customerName || 'بدون اسم'}</b><br><span style="font-size:10px; color:#555;">${o.customerAddress || ''}</span></td>
                 <td>${o.customerPhone || ''}<br>${o.customerCity || ''}</td>
                 <td>${o.productName || ''} (${o.productPrice || ''} دج)</td>
-                <td>${o.customerAddress || ''}</td>
+                <td><button class="delete-btn" onclick="deleteOrder('${id}')">حذف</button></td>
               </tr>
             `;
           });
@@ -251,7 +347,7 @@
         console.error("Error loading orders:", e);
       }
 
-      // تحميل تقييمات الزبناء
+      // 3. تحميل وتقييمات وآراء الزبناء مع صلاحية الحذف
       try {
         const reviewsSnap = await getDocs(collection(db, "reviews"));
         const reviewsBody = document.getElementById('reviewsTableBody');
@@ -262,12 +358,13 @@
         } else {
           reviewsSnap.forEach((docSnap) => {
             const r = docSnap.data();
+            const id = docSnap.id;
             const stars = '★'.repeat(Number(r.rating) || 5);
             reviewsBody.innerHTML += `
               <tr>
-                <td><b>${r.name || 'زائر'}</b></td>
-                <td><span class="review-row-stars">${stars}</span></td>
+                <td><b>${r.name || 'زائر'}</b><br><span class="review-row-stars">${stars}</span></td>
                 <td style="text-align: right; padding: 5px 10px;">${r.comment || ''}</td>
+                <td><button class="delete-btn" onclick="deleteReview('${id}')">حذف</button></td>
               </tr>
             `;
           });
@@ -277,7 +374,7 @@
       }
     }
 
-    // استرجاع الروابط المحفوظة مسبقاً في الإعدادات إن وجدت
+    // استرجاع الروابط المحفوظة مسبقاً وتحميل بيانات اللوحة
     window.onload = function() {
       if(localStorage.getItem('admin_wa')) document.getElementById('social-wa').value = localStorage.getItem('admin_wa');
       if(localStorage.getItem('admin_fb')) document.getElementById('social-fb').value = localStorage.getItem('admin_fb');
