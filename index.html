@@ -439,38 +439,45 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* الفوتر وشبكة وسائل التواصل الاجتماعي للأدمن */
+    /* الفوتر وتصميم أيقونات التواصل الاجتماعي للأدمن */
     footer {
       background-color: var(--primary-color);
       color: #aaa;
       text-align: center;
-      padding: 25px 20px 70px;
+      padding: 30px 20px 70px;
       font-size: 12px;
       margin-top: 30px;
+      border-top: 2px solid var(--accent-color);
+    }
+    .footer-title {
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 12px;
+      font-weight: bold;
     }
     .social-links {
       display: flex;
       justify-content: center;
       gap: 15px;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
     }
     .social-links a {
       color: #fff;
-      background: #333;
-      padding: 8px 12px;
+      background: #2a2a2a;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 16px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      transition: background 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
     }
-    .social-links a.whatsapp:hover { background: #25d366; }
-    .social-links a.facebook:hover { background: #1877f2; }
-    .social-links a.instagram:hover { background: #e4405f; }
+    .social-links a.whatsapp:hover { background: #25d366; transform: translateY(-3px); }
+    .social-links a.facebook:hover { background: #1877f2; transform: translateY(-3px); }
+    .social-links a.instagram:hover { background: #e4405f; transform: translateY(-3px); }
   </style>
 </head>
 <body>
@@ -594,13 +601,14 @@
     <p id="toast-text" style="margin: 0; color: #555;">قام للتو بطلب ساعة كلاسيكية فاخرة!</p>
   </div>
 
-  <!-- الفوتر مع روابط وسائل التواصل الاجتماعي المخصصة للأدمن -->
+  <!-- الفوتر وشبكة وسائل التواصل الاجتماعي للأدمن -->
   <footer>
+    <div class="footer-title">تواصل معنا عبر منصاتنا الرسمية</div>
     <div class="social-links">
-      <!-- استبدل علامت # برابط حسابك على واتساب، فيسبوك أو انستغرام -->
-      <a href="رابط_واتساب_هنا" target="_blank" class="whatsapp" title="WhatsApp">💬</a>
-      <a href="رابط_فيسبوك_هنا" target="_blank" class="facebook" title="Facebook">f</a>
-      <a href="رابط_انستغرام_هنا" target="_blank" class="instagram" title="Instagram">📸</a>
+      <!-- استبدل الروابط أدناه بروابط حساباتك الحقيقية -->
+      <a href="https://wa.me/212600000000" target="_blank" class="whatsapp" title="WhatsApp">💬</a>
+      <a href="https://facebook.com/yourpage" target="_blank" class="facebook" title="Facebook">f</a>
+      <a href="https://instagram.com/yourprofile" target="_blank" class="instagram" title="Instagram">📸</a>
     </div>
     <p>© 2026 Lahlou Accessories — جميع الحقوق محفوظة</p>
   </footer>
@@ -797,7 +805,7 @@
 
     window.submitOrder = async function() {
       const name = document.getElementById('cust-name').value;
-      const phone = document.getElementById('cust-phone').value;
+      const phone = document.getElementById('cust-phone.value') || document.getElementById('cust-phone').value;
       const address = document.getElementById('cust-address').value;
       const city = document.getElementById('cust-city').value;
 
