@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lahlou Accessories | متجر الإكسسوارات العصري</title>
-  <!-- مكتبة الأيقونات لجلب شعارات التواصل الاجتماعي الأصلية -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
@@ -13,6 +12,7 @@
       --accent-hover: #b45309;
       --bg-color: #f4f6f8;
       --text-color: #333;
+      --gold-text: #c7a156;
     }
     body {
       font-family: Tahoma, sans-serif;
@@ -20,25 +20,180 @@
       background-color: var(--bg-color);
       color: var(--text-color);
     }
-    header {
+
+    /* 1. شريط الإعلانات المتحرك */
+    .ticker-bar {
       background-color: var(--primary-color);
-      color: #fff;
-      padding: 15px;
+      color: var(--gold-text);
+      padding: 8px 15px;
+      font-size: 12px;
       text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      border-bottom: 3px solid var(--accent-color);
+      overflow: hidden;
+      white-space: nowrap;
     }
-    .container {
-      max-width: 1200px;
+    .ticker-content {
+      display: inline-block;
+      animation: ticker 20s linear infinite;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* 2. شريط التنقل والشعار */
+    .top-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 15px;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      gap: 20px;
+    }
+    .brand-logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      font-size: 14px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-color);
+      padding-bottom: 5px;
+    }
+    .nav-links a.active {
+      color: var(--accent-color);
+      border-bottom: 2px solid var(--accent-color);
+    }
+
+    /* 3. قسم Hero Banner */
+    .hero-banner {
+      background-image: url('https://images.pexels.com/photos/934068/pexels-photo-934068.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+    }
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .hero-title {
+      font-size: 28px;
+      color: var(--gold-text);
+      margin-bottom: 15px;
+    }
+    .hero-desc {
+      font-size: 14px;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+    .btn-shop {
+      background-color: var(--accent-color);
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* 4. شبكة الميزات والأيقونات */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      max-width: 900px;
       margin: 20px auto;
       padding: 0 15px;
     }
-    h2 {
+    .feature-card {
+      background: #fff;
+      padding: 15px;
       text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .feature-icon {
+      font-size: 20px;
+      color: var(--gold-text);
+      margin-bottom: 8px;
+    }
+    .feature-text {
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* 5. فلتر التصنيفات */
+    .categories-filter {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 30px 0;
+      padding: 0 15px;
+      flex-wrap: wrap;
+    }
+    .cat-btn {
+      background: #fff;
+      border: 1px solid #eee;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .cat-btn:hover, .cat-btn.active {
+      border-color: var(--gold-text);
+      color: var(--gold-text);
+      background-color: #fff7e6;
+    }
+    .cat-btn i {
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+    h2 {
+      text-align: right; /* العنوان على اليمين مثل الصورة */
       color: var(--primary-color);
       margin-bottom: 25px;
+      position: relative;
+      padding-right: 15px;
     }
+    h2::before {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 4px;
+      background-color: var(--gold-text);
+    }
+
     /* شبكة المنتجات */
     .products-grid {
       display: grid;
@@ -60,7 +215,6 @@
       height: 220px;
       object-fit: cover;
       border-radius: 8px;
-      background-color: #eee;
     }
     .product-title {
       font-size: 16px;
@@ -90,7 +244,7 @@
       background-color: var(--accent-hover);
     }
 
-    /* قسم تذييل الصفحة (Footer) وروابط التواصل الاجتماعي الأصلية */
+    /* تذييل الصفحة */
     footer {
       background-color: var(--primary-color);
       color: #fff;
@@ -117,125 +271,115 @@
       text-decoration: none;
       transition: transform 0.2s, background 0.2s;
     }
-    .social-icon:hover {
-      transform: scale(1.1);
-    }
-    /* الألوان الأصلية لمواقع التواصل عند المرور أو بشكل دائم */
+    .social-icon:hover { transform: scale(1.1); }
     .social-icon.whatsapp { color: #25D366; }
     .social-icon.facebook { color: #1877F2; }
     .social-icon.instagram { color: #E4405F; }
+    .copyright { font-size: 12px; color: #aaa; }
 
-    .copyright {
-      font-size: 12px;
+    /* 6. تنسيق نافذة الطلب (Modal) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fff;
+      width: 90%; max-width: 450px;
+      border-radius: 12px;
+      padding: 25px;
+      position: relative;
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px; left: 15px;
+      font-size: 20px;
+      cursor: pointer;
       color: #aaa;
     }
+    .modal-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+      color: var(--gold-text);
+    }
+    .modal-subtitle {
+      font-size: 13px;
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .form-group { margin-bottom: 15px; }
+    .form-label { display: block; font-size: 13px; margin-bottom: 5px; font-weight: bold; }
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: Tahoma, sans-serif;
+      box-sizing: border-box; /* مهم لمنع زيادة الحجم بسبب الـ padding */
+    }
+    .btn-submit-order {
+      background-color: var(--accent-color);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+    .btn-submit-order:hover { background-color: var(--accent-hover); }
+
+    /* تصميم المنتج داخل الـ Modal */
+    .modal-product-summary {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .modal-product-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+    .modal-product-info { display: flex; flex-direction: column; justify-content: center; }
+    .modal-product-name { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
+    .modal-product-price { font-size: 13px; color: var(--accent-color); }
+
   </style>
 </head>
 <body>
 
-  <header>
-    Lahlou Accessories 💍✨
-  </header>
-
-  <div class="container">
-    <h2>أحدث التشكيلات العصرية</h2>
-    
-    <!-- حاوية المنتجات التي يتم جلبها من قاعدة البيانات -->
-    <div id="products-container" class="products-grid">
-      <p style="text-align: center; grid-column: 1/-1; color: #777;">جاري تحميل المنتجات...</p>
+  <!-- 1. شريط الإعلانات -->
+  <div class="ticker-bar">
+    <div class="ticker-content">
+      ⚡ توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر لجميع مدن المغرب ⚡
     </div>
   </div>
 
-  <!-- تذييل الصفحة مع روابط التواصل الاجتماعي والشعارات الأصلية -->
-  <footer>
-    <div class="social-icons">
-      <!-- أيقونة واتساب -->
-      <a id="link-wa" href="#" target="_blank" class="social-icon whatsapp" title="واتساب">
-        <i class="fab fa-whatsapp"></i>
-      </a>
-      <!-- أيقونة فيسبوك -->
-      <a id="link-fb" href="#" target="_blank" class="social-icon facebook" title="فيسبوك">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <!-- أيقونة انستغرام -->
-      <a id="link-ig" href="#" target="_blank" class="social-icon instagram" title="انستغرام">
-        <i class="fab fa-instagram"></i>
-      </a>
+  <!-- 2. شريط التنقل -->
+  <div class="top-nav">
+    <div class="brand-logo">LAHLOU ACCESSORIES</div>
+    <div class="nav-links">
+      <a href="#" class="active">الرئيسية</a>
+      <a href="#">المنتجات</a>
     </div>
-    <div class="copyright">
-      © 2026 Lahlou Accessories — جميع الحقوق محفوظة
-    </div>
-  </footer>
+  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
-      authDomain: "lahlou-70ac2.firebaseapp.com",
-      projectId: "lahlou-70ac2",
-      storageBucket: "lahlou-70ac2.firebasestorage.app",
-      messagingSenderId: "1014570891670",
-      appId: "1:1014570891670:web:954e2da1b7881bd7d345b7",
-      measurementId: "G-PGW6J8WXWT"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // دالة جلب وعرض المنتجات بدون أسعار مزيفة أو عبارات مخزون
-    async function loadStoreProducts() {
-      try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        const container = document.getElementById('products-container');
-        container.innerHTML = '';
-
-        if (querySnapshot.empty) {
-          container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #777;">لا توجد منتجات مضافة حالياً.</p>';
-          return;
-        }
-
-        querySnapshot.forEach((docSnap) => {
-          const product = docSnap.data();
-          const productId = docSnap.id;
-
-          container.innerHTML += `
-            <div class="product-card">
-              <div>
-                <img src="${product.image || 'https://via.placeholder.com/300'}" alt="${product.name}" class="product-img">
-                <div class="product-title">${product.name || 'منتج عصري'}</div>
-                <div class="product-price">${product.price || 0} درهم</div>
-              </div>
-              <button class="btn-buy" onclick="window.location.href='checkout.html?id=${productId}'">اطلب الان</button>
-            </div>
-          `;
-        });
-      } catch (e) {
-        console.error("Error loading products:", e);
-      }
-    }
-
-    // جلب روابط وسائل التواصل الاجتماعي المحفوظة من لوحة الأدمن وتطبيقها على الأيقونات
-    function loadSocialLinks() {
-      const waLink = localStorage.getItem('admin_wa');
-      const fbLink = localStorage.getItem('admin_fb');
-      const igLink = localStorage.getItem('admin_ig');
-
-      const waElement = document.getElementById('link-wa');
-      const fbElement = document.getElementById('link-fb');
-      const igElement = document.getElementById('link-ig');
-
-      if (waLink) { waElement.href = waLink; } else { waElement.style.display = 'none'; }
-      if (fbLink) { fbElement.href = fbLink; } else { fbElement.style.display = 'none'; }
-      if (igLink) { igElement.href = igLink; } else { igElement.style.display = 'none'; }
-    }
-
-    window.onload = function() {
-      loadStoreProducts();
-      loadSocialLinks();
-    };
-  </script>
-
-</body>
-</html>
+  <!-- 3. قسم Hero -->
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">تألقي بأرقى الإكسسوارات الفاخرة</h1>
+      <p class="hero-desc">تشكيلة حصرية ومختارة بعناية لتضفي لمسة من الأناقة والتميز على إطلالتك اليومية.</p>
+      <a href="#products-section" class="btn-shop">تسوق
