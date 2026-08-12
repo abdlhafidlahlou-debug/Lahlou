@@ -61,7 +61,7 @@
       padding-bottom: 2px;
     }
 
-    /* البانر الرئيسي مع خلفية صور الساعات والخواتم */
+    /* البانر الرئيسي */
     .hero-banner {
       position: relative;
       background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
@@ -133,7 +133,7 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       padding: 0 15px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
     .cat-box {
       background: #fff;
@@ -154,6 +154,23 @@
       display: block;
       font-size: 18px;
       margin-bottom: 5px;
+    }
+
+    /* شريط أدوات التصفية المتقدمة والترتيب */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+      margin-bottom: 15px;
+    }
+    .filter-bar select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 12px;
+      background: #fff;
+      outline: none;
     }
 
     .container {
@@ -184,6 +201,18 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      position: relative;
+    }
+    .discount-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #dc2626;
+      color: #fff;
+      font-size: 10px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-weight: bold;
     }
     .product-card img {
       width: 100%;
@@ -199,11 +228,31 @@
       margin: 8px 0 4px;
       color: #222;
     }
-    .product-card p {
+    .price-box {
+      margin: 0 0 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    .current-price {
       color: var(--accent-color);
       font-weight: bold;
       font-size: 13px;
-      margin: 0 0 8px;
+    }
+    .old-price {
+      color: #888;
+      text-decoration: line-through;
+      font-size: 11px;
+    }
+    .stock-alert {
+      font-size: 10px;
+      color: #b91c1c;
+      background: #fef2f2;
+      padding: 3px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-weight: bold;
     }
     .card-buttons {
       display: flex;
@@ -242,7 +291,29 @@
       border-radius: 10px;
     }
 
-    /* نافذة تفاصيل المنتج وإتمام الطلب */
+    /* زر فتح واجهة تقييمات العملاء العائم في أسفل الصفحة */
+    .floating-review-trigger {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--primary-color);
+      color: #f59e0b;
+      border: 2px solid var(--accent-color);
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 998;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.2s;
+    }
+    .floating-review-trigger:hover { transform: scale(1.05); }
+
+    /* نوافذ منبثقة (Modals) العامة */
     .modal {
       display: none;
       position: fixed;
@@ -293,7 +364,7 @@
       margin-bottom: 15px;
       border-right: 3px solid var(--accent-color);
     }
-    .modal-content input {
+    .modal-content input, .modal-content textarea {
       width: 100%;
       padding: 10px;
       margin: 6px 0;
@@ -301,6 +372,7 @@
       border-radius: 6px;
       box-sizing: border-box;
       font-size: 13px;
+      font-family: Tahoma, sans-serif;
     }
     .modal-buttons {
       display: flex;
@@ -320,11 +392,79 @@
     .confirm-order-btn:hover { background: var(--accent-hover); }
     .cancel-order-btn { background: #eee; color: #333; }
 
+    /* تصميم نجوم التقييم التفاعلية داخل واجهة الآراء */
+    .star-rating-select {
+      display: flex;
+      gap: 8px;
+      font-size: 24px;
+      cursor: pointer;
+      justify-content: center;
+      margin: 10px 0;
+      color: #ddd;
+    }
+    .star-rating-select span.active-star {
+      color: #f59e0b;
+    }
+
+    /* قائمة عرض اراء المشترين داخل الواجهة */
+    .reviews-list-box {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 15px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+    .customer-review-item {
+      background: #f9f9f9;
+      padding: 8px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+    .customer-review-item .rev-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 3px;
+    }
+    .customer-review-item .rev-stars {
+      color: #f59e0b;
+    }
+
+    /* إشعار المبيعات الحية العائم */
+    .live-sale-toast {
+      position: fixed;
+      bottom: 75px;
+      left: 20px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-left: 4px solid var(--accent-color);
+      padding: 10px 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 11px;
+      z-index: 997;
+      display: none;
+      max-width: 260px;
+      animation: slideIn 0.4s ease;
+    }
+    .live-sale-toast span {
+      display: block;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 2px;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
     footer {
       background-color: var(--primary-color);
       color: #aaa;
       text-align: center;
-      padding: 20px;
+      padding: 25px 20px 70px; /* مساحة لكي لا يغطي الزر العائم محتوى الفوتر */
       font-size: 12px;
       margin-top: 30px;
     }
@@ -359,12 +499,22 @@
     <div class="badge-item"><span>💎</span>جودة عالية</div>
   </div>
 
-  <!-- فئات المنتجات التفاعلية (لتصفية المنتجات) -->
+  <!-- فئات المنتجات التفاعلية -->
   <div class="categories-grid">
     <div class="cat-box active-cat" onclick="filterCategory('الكل', this)"><span>🛍️</span>الكل</div>
     <div class="cat-box" onclick="filterCategory('ساعات', this)"><span>⌚</span>ساعات</div>
     <div class="cat-box" onclick="filterCategory('أساور', this)"><span>💎</span>أساور</div>
     <div class="cat-box" onclick="filterCategory('خواتم', this)"><span>💍</span>خواتم</div>
+  </div>
+
+  <!-- شريط أدوات الترتيب المتقدم -->
+  <div class="filter-bar">
+    <span style="font-size: 12px; color: #666;" id="results-count">عرض المنتجات</span>
+    <select id="sortSelect" onchange="sortProducts()">
+      <option value="default">الترتيب الافتراضي</option>
+      <option value="low-high">السعر: من الأرخص للأغلى</option>
+      <option value="high-low">السعر: من الأغلى للأرخص</option>
+    </select>
   </div>
 
   <div class="container">
@@ -373,6 +523,11 @@
       <div class="no-products">جاري تحميل المنتجات...</div>
     </div>
   </div>
+
+  <!-- زر عائم في أسفل الصفحة يفتح واجهة التقييمات والآراء -->
+  <button class="floating-review-trigger" onclick="openReviewsModal()">
+    ⭐ تقييمات وآراء العملاء
+  </button>
 
   <!-- نافذة تفاصيل المنتج وإتمام الطلب -->
   <div class="modal" id="productModal">
@@ -393,6 +548,58 @@
         <button class="cancel-order-btn" onclick="closeModal()">إغلاق</button>
       </div>
     </div>
+  </div>
+
+  <!-- واجهة تقييم المتجر وكتابة الرأي وعرض آراء المشترين -->
+  <div class="modal" id="reviewsModal">
+    <div class="modal-content">
+      <h3 style="margin-top: 0; text-align: center;">تقييمات وآراء المشترين ⭐</h3>
+      <p style="font-size: 12px; color: #666; text-align: center; margin-bottom: 10px;">قيم تجربتك مع منتجاتنا وشارِكنا رأيك:</p>
+      
+      <!-- اختيار النجوم -->
+      <div class="star-rating-select" id="starContainer">
+        <span onclick="setRating(1)">★</span>
+        <span onclick="setRating(2)">★</span>
+        <span onclick="setRating(3)">★</span>
+        <span onclick="setRating(4)">★</span>
+        <span onclick="setRating(5)" class="active-star">★</span>
+      </div>
+
+      <input type="text" id="reviewer-name" placeholder="اسمك الكريم (مثلاً: أمين من مراكش)">
+      <textarea id="reviewer-comment" rows="3" placeholder="اكتب رأيك حول الجودة، التوصيل والمنتجات..."></textarea>
+      
+      <div class="modal-buttons" style="margin-bottom: 15px;">
+        <button class="confirm-order-btn" onclick="submitReview()">إرسال التقييم</button>
+        <button class="cancel-order-btn" onclick="closeReviewsModal()">إغلاق</button>
+      </div>
+
+      <!-- قسم عرض آراء المشترين السابقة والحديثة -->
+      <div style="font-weight: bold; font-size: 13px; color: var(--primary-color); margin-bottom: 5px; border-right: 3px solid var(--accent-color); padding-right: 6px;">
+        آراء المشترين السابقين:
+      </div>
+      <div class="reviews-list-box" id="reviewsListBox">
+        <div class="customer-review-item">
+          <div class="rev-header">
+            <span>يوسف من الدار البيضاء</span>
+            <span class="rev-stars">★★★★★</span>
+          </div>
+          <p style="margin: 0; color: #555;">الصراحة الجودة ممتازة جداً والساعة وصلتني في غضون 48 ساعة كما وعدتم.</p>
+        </div>
+        <div class="customer-review-item">
+          <div class="rev-header">
+            <span>إيمان من الرباط</span>
+            <span class="rev-stars">★★★★★</span>
+          </div>
+          <p style="margin: 0; color: #555;">الإكسسوارات راقية وفخمة في الواقع أجمل من الصور بكثير.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- إشعار المبيعات الحية العائم -->
+  <div class="live-sale-toast" id="liveToast">
+    <span id="toast-title">🔔 زبون من الدار البيضاء</span>
+    <p id="toast-text" style="margin: 0; color: #555;">قام للتو بطلب ساعة كلاسيكية فاخرة!</p>
   </div>
 
   <footer>
@@ -417,7 +624,9 @@
     const db = getFirestore(app);
 
     let allProducts = [];
+    let currentFilteredProducts = [];
     let selectedProduct = null;
+    let currentRating = 5;
 
     async function loadProducts() {
       const grid = document.getElementById('productsGrid');
@@ -429,7 +638,10 @@
           allProducts.push(docSnap.data());
         });
 
-        displayProducts(allProducts);
+        currentFilteredProducts = [...allProducts];
+        displayProducts(currentFilteredProducts);
+        loadReviewsFromFirebase();
+        startLiveSalesTicker();
       } catch (error) {
         console.error("Error loading products: ", error);
         grid.innerHTML = '<div class="no-products">حدث خطأ أثناء تحميل المنتجات</div>';
@@ -439,6 +651,7 @@
     function displayProducts(products) {
       const grid = document.getElementById('productsGrid');
       grid.innerHTML = '';
+      document.getElementById('results-count').innerText = `عدد المنتجات: ${products.length}`;
       
       if (products.length === 0) {
         grid.innerHTML = '<div class="no-products">لا توجد إكسسوارات مضافة حالياً في هذه الفئة</div>';
@@ -446,12 +659,20 @@
       }
 
       products.forEach((prod) => {
+        const price = Number(prod.price) || 0;
+        const oldPrice = Math.round(price * 1.3);
+
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
+          <div class="discount-badge">تخفيض 30%</div>
           <img src="${prod.image || 'https://via.placeholder.com/150'}" alt="${prod.name}" onclick='openProductModal(${JSON.stringify(prod)})'>
           <h3>${prod.name}</h3>
-          <p>${prod.price} درهم</p>
+          <div class="price-box">
+            <span class="current-price">${price} درهم</span>
+            <span class="old-price">${oldPrice} درهم</span>
+          </div>
+          <div class="stock-alert">🔥 لم يَبقَ سوى 3 قطع في المخزون!</div>
           <div class="card-buttons">
             <button class="details-btn" onclick='openProductModal(${JSON.stringify(prod)})'>التفاصيل والوصف</button>
             <button class="buy-btn" onclick='openProductModal(${JSON.stringify(prod)})'>اطلب الان</button>
@@ -466,11 +687,24 @@
       element.classList.add('active-cat');
 
       if (category === 'الكل') {
-        displayProducts(allProducts);
+        currentFilteredProducts = [...allProducts];
       } else {
-        const filtered = allProducts.filter(p => p.name && p.name.includes(category));
-        displayProducts(filtered);
+        currentFilteredProducts = allProducts.filter(p => p.name && p.name.includes(category));
       }
+      sortProducts(false);
+    }
+
+    window.sortProducts = function(reRender = true) {
+      const sortBy = document.getElementById('sortSelect').value;
+      let sorted = [...currentFilteredProducts];
+
+      if (sortBy === 'low-high') {
+        sorted.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
+      } else if (sortBy === 'high-low') {
+        sorted.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
+      }
+
+      displayProducts(sorted);
     }
 
     window.openProductModal = function(prod) {
@@ -484,6 +718,96 @@
 
     window.closeModal = function() {
       document.getElementById('productModal').style.display = 'none';
+    }
+
+    // دوال واجهة التقييمات والآراء
+    window.openReviewsModal = function() {
+      document.getElementById('reviewsModal').style.display = 'flex';
+    }
+
+    window.closeReviewsModal = function() {
+      document.getElementById('reviewsModal').style.display = 'none';
+    }
+
+    window.setRating = function(stars) {
+      currentRating = stars;
+      const starElements = document.getElementById('starContainer').children;
+      for (let i = 0; i < starElements.length; i++) {
+        if (i < stars) {
+          starElements[i].classList.add('active-star');
+        } else {
+          starElements[i].classList.remove('active-star');
+        }
+      }
+    }
+
+    window.submitReview = async function() {
+      const name = document.getElementById('reviewer-name').value;
+      const comment = document.getElementById('reviewer-comment').value;
+
+      if (!name || !comment) {
+        alert("الرجاء كتابة اسمك ورأيك قبل الإرسال!");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "reviews"), {
+          name: name,
+          comment: comment,
+          rating: currentRating,
+          createdAt: new Date()
+        });
+
+        alert("شكراً لك! تم إضافة تقييمك بنجاح.");
+        document.getElementById('reviewer-name').value = '';
+        document.getElementById('reviewer-comment').value = '';
+        closeReviewsModal();
+        loadReviewsFromFirebase();
+      } catch (e) {
+        alert("حدث خطأ أثناء حفظ التقييم: " + e.message);
+      }
+    }
+
+    async function loadReviewsFromFirebase() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "reviews"));
+        const listBox = document.getElementById('reviewsListBox');
+        
+        let reviewsHTML = `
+          <div class="customer-review-item">
+            <div class="rev-header">
+              <span>يوسف من الدار البيضاء</span>
+              <span class="rev-stars">★★★★★</span>
+            </div>
+            <p style="margin: 0; color: #555;">الصراحة الجودة ممتازة جداً والساعة وصلتني في غضون 48 ساعة كما وعدتم.</p>
+          </div>
+          <div class="customer-review-item">
+            <div class="rev-header">
+              <span>إيمان من الرباط</span>
+              <span class="rev-stars">★★★★★</span>
+            </div>
+            <p style="margin: 0; color: #555;">الإكسسوارات راقية وفخمة في الواقع أجمل من الصور بكثير.</p>
+          </div>
+        `;
+
+        querySnapshot.forEach((docSnap) => {
+          const rev = docSnap.data();
+          const starsStr = '★'.repeat(Number(rev.rating) || 5);
+          reviewsHTML += `
+            <div class="customer-review-item">
+              <div class="rev-header">
+                <span>${rev.name}</span>
+                <span class="rev-stars">${starsStr}</span>
+              </div>
+              <p style="margin: 0; color: #555;">${rev.comment}</p>
+            </div>
+          `;
+        });
+
+        listBox.innerHTML = reviewsHTML;
+      } catch (err) {
+        console.error("Error loading reviews:", err);
+      }
     }
 
     window.submitOrder = async function() {
@@ -518,6 +842,25 @@
       } catch (e) {
         alert("حدث خطأ أثناء إرسال الطلب: " + e.message);
       }
+    }
+
+    function startLiveSalesTicker() {
+      const cities = ["الدار البيضاء", "الرباط", "مراكش", "طنجة", "أكادير", "فاس"];
+      const actions = ["اشتري للتو ساعة فاخرة", "اطلب طقماً راقياً", "أتم طلب خاتم أنيق"];
+      
+      setInterval(() => {
+        const randomCity = cities[Math.floor(Math.random() * cities.length)];
+        const randomAction = actions[Math.floor(Math.random() * actions.length)];
+        
+        const toast = document.getElementById('liveToast');
+        document.getElementById('toast-title').innerText = `🔔 زبون من ${randomCity}`;
+        document.getElementById('toast-text').innerText = `قام للتو بطلب و${randomAction}!`;
+        
+        toast.style.display = 'block';
+        setTimeout(() => {
+          toast.style.display = 'none';
+        }, 4000);
+      }, 12000);
     }
 
     loadProducts();
