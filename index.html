@@ -7,7 +7,8 @@
   <style>
     :root {
       --primary-color: #1a1a1a;
-      --accent-color: #d4af37;
+      --accent-color: #d97706; /* لون برتقالي فاخر */
+      --accent-hover: #b45309;
       --bg-color: #fbfbfb;
       --text-color: #333;
     }
@@ -19,7 +20,7 @@
     }
     .top-bar {
       background-color: var(--primary-color);
-      color: var(--accent-color);
+      color: #f59e0b;
       text-align: center;
       font-size: 11px;
       padding: 6px;
@@ -80,13 +81,16 @@
     }
     .hero-btn {
       background-color: var(--accent-color);
-      color: #1a1a1a;
+      color: #fff;
       border: none;
       padding: 10px 25px;
       border-radius: 20px;
       font-weight: bold;
       font-size: 13px;
       cursor: pointer;
+    }
+    .hero-btn:hover {
+      background-color: var(--accent-hover);
     }
     .categories-grid {
       display: grid;
@@ -134,7 +138,6 @@
       text-align: center;
       border: 1px solid #eee;
     }
-    /* تعديل مقاس الصورة ليكون 9:16 */
     .product-card img {
       width: 100%;
       aspect-ratio: 9 / 16;
@@ -158,7 +161,7 @@
       margin: 0 0 10px;
     }
     .buy-btn {
-      background-color: var(--primary-color);
+      background-color: var(--accent-color);
       color: #fff;
       border: none;
       width: 100%;
@@ -167,6 +170,9 @@
       cursor: pointer;
       font-size: 13px;
       font-weight: bold;
+    }
+    .buy-btn:hover {
+      background-color: var(--accent-hover);
     }
     .no-products {
       grid-column: span 2;
@@ -178,7 +184,7 @@
       border-radius: 10px;
     }
 
-    /* نافذة عرض تفاصيل المنتج ووصفه عند الضغط على الصورة */
+    /* نافذة تفاصيل المنتج وإتمام الطلب */
     .modal {
       display: none;
       position: fixed;
@@ -252,7 +258,8 @@
       font-weight: bold;
       font-size: 13px;
     }
-    .confirm-order-btn { background: var(--accent-color); color: var(--primary-color); }
+    .confirm-order-btn { background: var(--accent-color); color: #fff; }
+    .confirm-order-btn:hover { background: var(--accent-hover); }
     .cancel-order-btn { background: #eee; color: #333; }
 
     footer {
