@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -474,7 +475,6 @@
     .social-links a:hover {
       transform: translateY(-4px);
     }
-    /* الألوان والشعارات الأصلية لكل منصة */
     .social-links a.whatsapp { background-color: #25d366; }
     .social-links a.facebook { background-color: #1877f2; }
     .social-links a.instagram { 
@@ -701,6 +701,11 @@
         displayProducts(currentFilteredProducts);
         loadReviewsFromFirebase();
         startLiveSalesTicker();
+        
+        // تفعيل ميزة التوصيات الذكية (AI) بعد تحميل المنتجات الأصلية تلقائياً
+        if (typeof initAIRecommendationEngine === 'function') {
+          initAIRecommendationEngine(allProducts);
+        }
       } catch (error) {
         console.error("Error loading products: ", error);
         grid.innerHTML = '<div class="no-products">حدث خطأ أثناء تحميل المنتجات</div>';
@@ -909,6 +914,67 @@
     }
 
     loadStoreData();
+
+    // ==========================================
+    // وحدة مضافة للذكاء الاصطناعي والتوصيات الذكية دون تغيير كودك الأساسي
+    // ==========================================
+    window.initAIRecommendationEngine = function(allProducts) {
+      const historyKey = 'lahlou_user_behavior_history';
+      
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('.product-card, .details-btn, .buy-btn');
+        if (target) {
+          const card = target.closest('.product-card') || target.closest('.modal-content');
+          if (card) {
+            const titleElement = card.querySelector('h3') || card.querySelector('#modal-title');
+            if (titleElement) {
+              const productName = titleElement.innerText;
+              let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+              if (!history.includes(productName)) {
+                history.unshift(productName);
+                if (history.length > 10) history.pop();
+                localStorage.setItem(historyKey, JSON.stringify(history));
+              }
+            }
+          }
+        }
+      });
+
+      let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+      let recommendedProducts = [...allProducts];
+      
+      if (history.length > 0) {
+        let filtered = allProducts.filter(p => 
+          history.some(h => p.name && (p.name.includes(h.split(' ')[0]) || h.includes(p.name)))
+        );
+        if (filtered.length > 0) recommendedProducts = filtered;
+      }
+
+      const container = document.getElementById('productsGrid');
+      if (container && !document.getElementById('ai-recommendations-section') && recommendedProducts.length > 0) {
+        const aiSection = document.createElement('div');
+        aiSection.id = 'ai-recommendations-section';
+        aiSection.style.cssText = `
+          grid-column: span 2;
+          background: linear-gradient(135deg, #fffdf5, #fff5e6);
+          border: 1px dashed var(--accent-color, #d97706);
+          padding: 15px;
+          border-radius: 10px;
+          margin-bottom: 20px;
+          text-align: center;
+        `;
+        aiSection.innerHTML = `
+          <div style="font-weight: bold; color: var(--primary-color, #1a1a1a); font-size: 13px; margin-bottom: 8px;">
+            ✨ <span style="color: var(--accent-color, #d97706);">مقترح لك بالذكاء الاصطناعي</span> بناءً على ذوقك وتصفحك السابق
+          </div>
+          <div style="font-size: 11px; color: #666; margin-bottom: 10px;">اخترنا لك هذه القطعة خصيصاً لتتناسب مع إطلالتك:</div>
+          <div style="font-weight: bold; color: var(--primary-color); font-size: 12px; background: #fff; padding: 8px; border-radius: 6px; display: inline-block; border: 1px solid #eee;">
+            💎 ${recommendedProducts[0].name} — <span style="color: var(--accent-color);">${recommendedProducts[0].price} درهم</span>
+          </div>
+        `;
+        container.parentNode.insertBefore(aiSection, container);
+      }
+    };
   </script>
 
 </body>
