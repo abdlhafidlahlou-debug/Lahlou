@@ -328,7 +328,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCLe41I2NAkQQ5xcRRFou4vCN7AhNH4NRE",
@@ -422,22 +422,41 @@
       }
     };
 
-    // حفظ روابط وسائل التواصل الاجتماعي
-    window.saveSocialLinks = function() {
+    // حفظ روابط وسائل التواصل الاجتماعي في قاعدة البيانات لترتبط بصفحة المتجر الحقيقية
+    window.saveSocialLinks = async function() {
       const wa = document.getElementById('social-wa').value;
       const fb = document.getElementById('social-fb').value;
       const ig = document.getElementById('social-ig').value;
 
-      localStorage.setItem('admin_wa', wa);
-      localStorage.setItem('admin_fb', fb);
-      localStorage.setItem('admin_ig', ig);
-
-      alert("تم حفظ الروابط بنجاح!");
+      try {
+        await setDoc(doc(db, "settings", "social_links"), {
+          whatsapp: wa,
+          facebook: fb,
+          instagram: ig,
+          updatedAt: new Date()
+        });
+        alert("تم حفظ الروابط وربطها بالمتجر بنجاح!");
+      } catch (e) {
+        alert("حدث خطأ أثناء حفظ الروابط: " + e.message);
+      }
     };
 
     // تحميل جميع بيانات لوحة التحكم
     async function loadAdminData() {
-      // 1. تحميل المنتجات
+      // 1. تحميل الروابط المحفوظة من قاعدة البيانات
+      try {
+        const socialDoc = await getDoc(doc(db, "settings", "social_links"));
+        if (socialDoc.exists()) {
+          const data = socialDoc.data();
+          if (data.whatsapp) document.getElementById('social-wa').value = data.whatsapp;
+          if (data.facebook) document.getElementById('social-fb').value = data.facebook;
+          if (data.instagram) document.getElementById('social-ig').value = data.instagram;
+        }
+      } catch (e) {
+        console.error("Error loading social links:", e);
+      }
+
+      // 2. تحميل المنتجات
       try {
         const prodSnap = await getDocs(collection(db, "products"));
         const prodBody = document.getElementById('productsTableBody');
@@ -462,7 +481,7 @@
         console.error("Error loading products:", e);
       }
 
-      // 2. تحميل الطلبات
+      // 3. تحميل الطلبات
       try {
         const ordersSnap = await getDocs(collection(db, "orders"));
         const ordersBody = document.getElementById('ordersTableBody');
@@ -488,7 +507,7 @@
         console.error("Error loading orders:", e);
       }
 
-      // 3. تحميل وتقييمات وآراء الزبناء
+      // 4. تحميل تقييمات وآراء الزبناء
       try {
         const reviewsSnap = await getDocs(collection(db, "reviews"));
         const reviewsBody = document.getElementById('reviewsTableBody');
@@ -515,12 +534,8 @@
       }
     }
 
-    // استرجاع الروابط المحفوظة وتحميل البيانات عند فتح الصفحة
+    // تحميل البيانات عند فتح الصفحة
     window.onload = function() {
-      if(localStorage.getItem('admin_wa')) document.getElementById('social-wa').value = localStorage.getItem('admin_wa');
-      if(localStorage.getItem('admin_fb')) document.getElementById('social-fb').value = localStorage.getItem('admin_fb');
-      if(localStorage.getItem('admin_ig')) document.getElementById('social-ig').value = localStorage.getItem('admin_ig');
-      
       loadAdminData();
     };
   </script>
