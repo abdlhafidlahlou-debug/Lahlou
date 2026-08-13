@@ -20,15 +20,14 @@
     }
     /* شريط التنبيهات المتحرك من اليسار إلى اليمين */
     .top-bar {
-      background-color: #7b2432; /* لون خمري فاتح */
-      color: #fff;
-      font-size: 15px;
-      padding: 10px 0;
-      border-bottom: 1px solid #5a1924;
+      background-color: var(--primary-color);
+      color: #f59e0b;
+      font-size: 11px;
+      padding: 8px 0;
+      border-bottom: 1px solid #333;
       font-weight: bold;
       overflow: hidden;
       white-space: nowrap;
-      text-align: center;
     }
     .top-bar marquee {
       width: 100%;
@@ -491,10 +490,10 @@
 </head>
 <body>
 
-  <!-- شريط التنبيهات المتحرك بلون خمري فاتح والاسم أكبر في المنتصف -->
+  <!-- شريط التنبيهات المتحرك (من اليسار إلى اليمين) -->
   <div class="top-bar">
     <marquee direction="right" scrollamount="5">
-      ⚡ توصيل مجاني للطلبات فوق 500 درهم &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; <span style="font-size: 18px; color: #ffeb3b;">Unifaye</span> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; الدفع عند الاستلام متوفر لجميع مدن المغرب ✨
+      ⚡ توصيل مجاني للطلبات فوق 500 درهم — الدفع عند الاستلام متوفر لجميع مدن المغرب ✨
     </marquee>
   </div>
 
@@ -568,6 +567,16 @@
         <button class="confirm-order-btn" onclick="submitOrder()">تأكيد الطلب</button>
         <button class="cancel-order-btn" onclick="closeModal()">إغلاق</button>
       </div>
+    </div>
+  </div>
+
+  <!-- نافذة نجاح تأكيد الطلب -->
+  <div class="modal" id="successModal">
+    <div class="modal-content" style="text-align: center; padding: 30px 20px;">
+      <div style="font-size: 50px; margin-bottom: 10px;">🎉</div>
+      <h3 style="color: var(--accent-color); font-size: 20px; margin-bottom: 10px;">لقد تم تأكيد الطلب</h3>
+      <p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 20px;">شكراً لك! سنتصل بك قريباً لتأكيد تفاصيل التوصيل.</p>
+      <button class="confirm-order-btn" onclick="closeSuccessModal()" style="width: 100%;">حسناً</button>
     </div>
   </div>
 
@@ -777,6 +786,10 @@
       document.getElementById('productModal').style.display = 'none';
     }
 
+    window.closeSuccessModal = function() {
+      document.getElementById('successModal').style.display = 'none';
+    }
+
     window.openReviewsModal = function() {
       document.getElementById('reviewsModal').style.display = 'flex';
     }
@@ -879,8 +892,8 @@
           createdAt: new Date()
         });
 
-        alert("تم تسجيل طلبك بنجاح! سنتصل بك قريباً للتأكيد.");
         closeModal();
+        document.getElementById('successModal').style.display = 'flex';
         
         document.getElementById('cust-name').value = '';
         document.getElementById('cust-phone').value = '';
