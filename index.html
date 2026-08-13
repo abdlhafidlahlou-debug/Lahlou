@@ -580,6 +580,16 @@
     </div>
   </div>
 
+  <!-- نافذة نجاح إرسال التقييم -->
+  <div class="modal" id="reviewSuccessModal">
+    <div class="modal-content" style="text-align: center; padding: 30px 20px;">
+      <div style="font-size: 50px; margin-bottom: 10px;">✨</div>
+      <h3 style="color: var(--accent-color); font-size: 20px; margin-bottom: 10px;">تم النشر</h3>
+      <p style="font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 20px;">شكراً لك! تم إضافة تقييمك بنجاح.</p>
+      <button class="confirm-order-btn" onclick="closeReviewSuccessModal()" style="width: 100%;">حسناً</button>
+    </div>
+  </div>
+
   <!-- واجهة تقييم المتجر وكتابة الرأي وعرض آراء المشترين -->
   <div class="modal" id="reviewsModal">
     <div class="modal-content">
@@ -798,6 +808,10 @@
       document.getElementById('reviewsModal').style.display = 'none';
     }
 
+    window.closeReviewSuccessModal = function() {
+      document.getElementById('reviewSuccessModal').style.display = 'none';
+    }
+
     window.setRating = function(stars) {
       currentRating = stars;
       const starElements = document.getElementById('starContainer').children;
@@ -827,10 +841,10 @@
           createdAt: new Date()
         });
 
-        alert("شكراً لك! تم إضافة تقييمك بنجاح.");
         document.getElementById('reviewer-name').value = '';
         document.getElementById('reviewer-comment').value = '';
         closeReviewsModal();
+        document.getElementById('reviewSuccessModal').style.display = 'flex';
         loadReviewsFromFirebase();
       } catch (e) {
         alert("حدث خطأ أثناء حفظ التقييم: " + e.message);
