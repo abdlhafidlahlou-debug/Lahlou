@@ -24,6 +24,49 @@
       overflow: hidden;
     }
 
+    /* شاشة تسجيل الدخول (مخفية افتراضياً حتى يتم التحقق من حالة المصادقة) */
+    #login-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--primary-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .login-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .login-card h2 {
+      color: var(--primary-color);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 20px;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 10px;
+    }
+    .login-card input {
+      margin-bottom: 15px;
+    }
+    .login-card button {
+      margin-top: 5px;
+    }
+    .login-error {
+      color: var(--danger-color);
+      font-size: 12px;
+      margin-top: 10px;
+      display: none;
+    }
+
     /* الشريط الجانبي الأيمن للأيقونات والقوائم */
     .sidebar {
       width: 240px;
@@ -71,6 +114,14 @@
     }
     .menu-item span.icon {
       font-size: 18px;
+    }
+    .logout-item {
+      color: #f87171;
+      border-top: 1px solid #333;
+    }
+    .logout-item:hover {
+      background-color: #7f1d1d;
+      color: #fff;
     }
 
     /* محتوى لوحة التحكم الرئيسي */
@@ -204,7 +255,18 @@
 </head>
 <body>
 
-  <!-- الشريط الجانبي الأيمن -->
+  <!-- شاشة تسجيل الدخول المحمية -->
+  <div id="login-screen">
+    <div class="login-card">
+      <h2>تسجيل دخول الأدمن 🔐</h2>
+      <input type="email" id="login-email" placeholder="البريد الإلكتروني">
+      <input type="password" id="login-password" placeholder="كلمة المرور">
+      <button onclick="handleLogin()">دخول لوحة التحكم</button>
+      <div id="login-error" class="login-error">البريد الإلكتروني أو كلمة المرور غير صحيحة!</div>
+    </div>
+  </div>
+
+  <!-- الشريط الجانبي الأيمن (يظهر فقط بعد تسجيل الدخول) -->
   <div class="sidebar">
     <div class="sidebar-header">Lahlou Admin ⚙️</div>
     <ul class="menu-list">
@@ -222,6 +284,9 @@
       </li>
       <li class="menu-item" onclick="switchTab('social', this)">
         <span class="icon">🌐</span> مواقع التواصل
+      </li>
+      <li class="menu-item logout-item" onclick="handleLogout()">
+        <span class="icon">🚪</span> تسجيل الخروج
       </li>
     </ul>
   </div>
@@ -328,6 +393,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -341,7 +407,56 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
+
+    // مراقبة حالة المصادقة (Auth State Listener)
+    onAuthStateChanged(auth, (user) => {
+      const loginScreen = document.getElementById('login-screen');
+      if (user) {
+        // المستخدم مسجل الدخول، قم بإخفاء شاشة تسجيل الدخول وتحميل البيانات
+        loginScreen.style.display = 'none';
+        loadAdminData();
+      } else {
+        // المستخدم غير مسجل الدخول، أظهر شاشة تسجيل الدخول
+        loginScreen.style.display = 'flex';
+      }
+    });
+
+    // دالة تسجيل الدخول
+    window.handleLogin = async function() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errorDiv = document.getElementById('login-error');
+
+      errorDiv.style.display = 'none';
+
+      if (!email || !password) {
+        errorDiv.innerText = "الرجاء إدخال البريد الإلكتروني وكلمة المرور!";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        // تم الدخول بنجاح وسيتم إخفاء الشاشة تلقائياً عبر الـ onAuthStateChanged
+      } catch (error) {
+        console.error("Login error:", error);
+        errorDiv.innerText = "البريد الإلكتروني أو كلمة المرور غير صحيحة!";
+        errorDiv.style.display = 'block';
+      }
+    };
+
+    // دالة تسجيل الخروج
+    window.handleLogout = async function() {
+      if (confirm("هل تريد بالتأكيد تسجيل الخروج من لوحة التحكم؟")) {
+        try {
+          await signOut(auth);
+        } catch (error) {
+          alert("حدث خطأ أثناء تسجيل الخروج.");
+        }
+      }
+    };
 
     // دالة التنقل بين التبويبات عبر الشريط الجانبي
     window.switchTab = function(tabId, element) {
@@ -533,11 +648,6 @@
         console.error("Error loading reviews:", e);
       }
     }
-
-    // تحميل البيانات عند فتح الصفحة
-    window.onload = function() {
-      loadAdminData();
-    };
   </script>
 
 </body>
